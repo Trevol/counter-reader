@@ -1,7 +1,5 @@
-package cam.tavrida.energysales
+package com.tavrida.energysales.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
@@ -19,10 +17,10 @@ fun OrientationSelector(
     }
 ) {
     when {
-        orientationHelper.portrait() -> {
+        OrientationHelper.portrait() -> {
             portrait()
         }
-        orientationHelper.landscape() -> {
+        OrientationHelper.landscape() -> {
             landscape()
         }
         else -> {

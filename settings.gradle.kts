@@ -9,4 +9,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CounterReader"
 include(":app")
- 

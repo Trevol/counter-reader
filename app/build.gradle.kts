@@ -44,6 +44,11 @@ android {
         kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
         kotlinCompilerVersion = "1.4.32"
     }
+    packagingOptions {
+        exclude ("META-INF/licenses/**")
+        exclude ("META-INF/AL2.0")
+        exclude ("META-INF/LGPL2.1")
+    }
 }
 
 dependencies {
@@ -55,7 +60,16 @@ dependencies {
     implementation("androidx.compose.material:material:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha05")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha06")
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.32")
+    implementation("com.h2database:h2:1.4.200")
+    implementation("org.jetbrains.exposed:exposed-core:${rootProject.extra["exposedVersion"]}")
+    implementation("org.jetbrains.exposed:exposed-dao:${rootProject.extra["exposedVersion"]}")
+    implementation("org.jetbrains.exposed:exposed-jdbc:${rootProject.extra["exposedVersion"]}")
+    implementation("org.jetbrains.exposed:exposed-java-time:${rootProject.extra["exposedVersion"]}")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
+
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")

@@ -1,4 +1,4 @@
-package cam.tavrida.energysales.ui.theme
+package com.tavrida.energysales.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package cam.tavrida.energysales
+package com.tavrida.energysales
 
 import org.junit.Test
 
