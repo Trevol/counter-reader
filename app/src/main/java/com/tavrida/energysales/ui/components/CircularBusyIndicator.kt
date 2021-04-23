@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-inline fun CircularBusyIndicator(busy: Boolean = true) {
+fun CircularBusyIndicator(busy: Boolean = true) {
     if (busy) {
         Surface(modifier = Modifier.fillMaxSize(), color = Color(0xAAFFFFFF)) {
             Column(

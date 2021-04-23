@@ -9,7 +9,9 @@ import com.tavrida.energysales.data_access.DatabaseInstance
 import com.tavrida.energysales.ui.AppScreen
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModelImpl
+import com.tavrida.utils.println
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -23,8 +25,8 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launchWhenCreated {
-            withContext(Dispatchers.IO){
-
+            withContext(Dispatchers.IO) {
+                viewModel.loadData()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.tavrida.energysales.data_access
 
+import com.tavrida.energysales.data_access.dbmodel.tables.allTables
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -7,7 +8,6 @@ import java.io.File
 
 object DatabaseInstance {
     const val DB_NAME = "ENERGY_SALES_MOBILE"
-
 
     fun get(directory: File) = dbUrl(directory).let { Database.connect(it).initSchema() }
 
@@ -23,7 +23,7 @@ object DatabaseInstance {
             return this
         }
         transaction(this) {
-            SchemaUtils.create(*Schema.allTables)
+            SchemaUtils.create(*allTables)
         }
         schemaInitialized = true
         return this
