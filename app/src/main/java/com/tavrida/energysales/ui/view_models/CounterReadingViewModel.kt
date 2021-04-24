@@ -18,8 +18,22 @@ abstract class CounterReadingViewModel {
         return !busy && counterReading.isValid
     }
 
-    var consumers by mutableStateOf(listOf<Consumer>())
+    protected var allCustomers = listOf<Consumer>()
+    var visibleCustomers by mutableStateOf(listOf<Consumer>())
     abstract fun loadData()
+
+    fun searchCustomers(query: String) {
+        if (query == "")
+            visibleCustomers = allCustomers
+        else {
+            visibleCustomers = allCustomers.filter {
+                it.name.contains(query, ignoreCase = true) ||
+                        it.counters.any {
+                            it.serialNumber.toString().contains(query, ignoreCase = true)
+                        }
+            }
+        }
+    }
 }
 
 class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() {
@@ -41,7 +55,8 @@ class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() 
     override fun loadData() {
         busy = true
         try {
-            consumers = dataContext.loadAll()
+            allCustomers = dataContext.loadAll()
+            searchCustomers("")
         } finally {
             busy = false
         }
