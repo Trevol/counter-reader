@@ -1,20 +1,32 @@
 package com.tavrida.energysales.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material.icons.rounded.ImageAspectRatio
+import androidx.compose.material.icons.rounded.Pin
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tavrida.energysales.data_access.models.Consumer
 
 @Composable
 fun ConsumersList(consumers: List<Consumer>) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(5.dp)
+    ) {
         items(consumers) { consumer ->
             ConsumerCard(consumer)
         }
@@ -30,16 +42,10 @@ private fun ConsumerCard(consumer: Consumer) {
             .clickable { },
         elevation = 5.dp
     ) {
-        Column {
-            Text(text = consumer.name, fontSize = 24.sp)
-            Row {
-                Spacer(modifier = Modifier.width(10.dp))
-                Column {
-                    for (counter in consumer.counters) {
-                        Text(text = counter.serialNumber.toString())
-                    }
-                }
-            }
-        }
+        Text(
+            modifier=Modifier.padding(10.dp, 20.dp),
+            text = consumer.name,
+            fontSize = 24.sp
+        )
     }
 }

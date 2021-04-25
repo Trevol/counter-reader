@@ -2,27 +2,19 @@ package com.tavrida.energysales
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tavrida.energysales.data_access.dbmodel.tables.CounterReadingsTable.defaultExpression
 import com.tavrida.energysales.data_access.dbmodel.tables.allTables
 import com.tavrida.energysales.data_access.models.*
 import com.tavrida.utils.padStartEx
 import org.jetbrains.exposed.sql.transactions.transaction
 import com.tavrida.utils.println
-import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.`java-time`.CurrentDateTime
-import org.jetbrains.exposed.sql.`java-time`.CurrentTimestamp
-import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.jetbrains.exposed.sql.`java-time`.timestamp
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import java.io.File
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 import kotlin.system.measureTimeMillis
 
 @RunWith(AndroidJUnit4::class)
@@ -69,24 +61,25 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
         serialNumber: Int,
         K: Double
     ): Pair<List<CounterReading>, PrevCounterReading> {
-        val now = LocalDateTime.now()
-        val monthAgo = now.minus(30, ChronoUnit.DAYS)
-        val readingMonthAgo = consumerPos * 100.0
+        val monthAgo = LocalDateTime.now().minusMonths(1)
+        val twoMonthsAgo = monthAgo.minusMonths(1)
+        val readingTwoMonthsAgo = consumerPos * 100.0
         val readingDeltaForMonth = consumerPos * 10.0 + counterPos
-        val redings = listOf(
+        val readingMonthAgo = readingTwoMonthsAgo + readingDeltaForMonth
+        val readings = listOf(
+            CounterReading(
+                id = -1,
+                counterId = -1,
+                reading = readingTwoMonthsAgo,
+                readTime = twoMonthsAgo,
+                comment = "Это показания $twoMonthsAgo"
+            ),
             CounterReading(
                 id = -1,
                 counterId = -1,
                 reading = readingMonthAgo,
                 readTime = monthAgo,
                 comment = "Это показания $monthAgo"
-            ),
-            CounterReading(
-                id = -1,
-                counterId = -1,
-                reading = readingMonthAgo + readingDeltaForMonth,
-                readTime = now,
-                comment = "Это показания $now"
             )
         )
         val prevReading = PrevCounterReading(
@@ -97,7 +90,7 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
             readDate = monthAgo.atZone(ZoneOffset.UTC).toLocalDate(),
             comment = "This is prev reading of $serialNumber"
         )
-        return redings to prevReading
+        return readings to prevReading
     }
 
     val maxLen = nOfConsumers.toString().length

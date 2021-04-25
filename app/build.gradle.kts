@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_version"]}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.0-alpha07")
+    implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.32")
     implementation("com.h2database:h2:1.4.200")
