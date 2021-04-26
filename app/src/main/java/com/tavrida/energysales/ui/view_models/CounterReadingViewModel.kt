@@ -22,6 +22,8 @@ abstract class CounterReadingViewModel {
     var visibleCustomers by mutableStateOf(listOf<Consumer>())
     abstract fun loadData()
 
+    var selectedItem by mutableStateOf<Consumer?>(null)
+
     fun searchCustomers(query: String) {
         if (query == "")
             visibleCustomers = allCustomers

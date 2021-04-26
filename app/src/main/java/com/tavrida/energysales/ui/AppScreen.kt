@@ -22,9 +22,17 @@ fun AppScreen(viewModel: CounterReadingViewModel) {
             ScanByCameraButton()
         }
     ) {
-        ConsumersList(viewModel.visibleCustomers)
-        CircularBusyIndicator(viewModel.busy)
+        ConsumersList(viewModel.visibleCustomers, onClick = { viewModel.selectedItem = it })
     }
+
+    if (viewModel.selectedItem != null) {
+        ConsumerDetails(
+            consumer = viewModel.selectedItem!!,
+            onClose = { viewModel.selectedItem = null }
+        )
+    }
+
+    CircularBusyIndicator(viewModel.busy)
 }
 
 @Composable
