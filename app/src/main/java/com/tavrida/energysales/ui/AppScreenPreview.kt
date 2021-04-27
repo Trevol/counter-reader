@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppScreenPreview() {
     val viewModel = remember { DummyViewModel() }
-    AppScreen(viewModel)
+    App(viewModel)
 }
 
 private class DummyViewModel : CounterReadingViewModel() {

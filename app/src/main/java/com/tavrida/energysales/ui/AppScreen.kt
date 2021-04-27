@@ -13,7 +13,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppScreen(viewModel: CounterReadingViewModel) {
+fun App(viewModel: CounterReadingViewModel) {
+    ConsumersListScreen(viewModel)
+
+    if (viewModel.selectedItem != null) {
+        ConsumerDetailsScreen(
+            consumer = viewModel.selectedItem!!,
+            onClose = { viewModel.selectedItem = null }
+        )
+    }
+
+    CircularBusyIndicator(viewModel.busy)
+}
+
+@Composable
+private fun ConsumersListScreen(viewModel: CounterReadingViewModel) {
     Scaffold(
         topBar = {
             ConsumerCounterSearch("", { query -> viewModel.searchCustomers(query) })
@@ -24,19 +38,11 @@ fun AppScreen(viewModel: CounterReadingViewModel) {
     ) {
         ConsumersList(viewModel.visibleCustomers, onClick = { viewModel.selectedItem = it })
     }
-
-    if (viewModel.selectedItem != null) {
-        ConsumerDetails(
-            consumer = viewModel.selectedItem!!,
-            onClose = { viewModel.selectedItem = null }
-        )
-    }
-
-    CircularBusyIndicator(viewModel.busy)
 }
 
+
 @Composable
-fun ScanByCameraButton() {
+private fun ScanByCameraButton() {
     FloatingActionButton(
         onClick = {
             //TODO: scan by camera and select consumer/counter

@@ -6,12 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.tavrida.energysales.data_access.DatabaseInstance
-import com.tavrida.energysales.ui.AppScreen
+import com.tavrida.energysales.ui.App
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModelImpl
-import com.tavrida.utils.println
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +19,7 @@ class MainActivity : ComponentActivity() {
         //TODO: move to external storage!!!
         viewModel = CounterReadingViewModelImpl(DatabaseInstance.get(filesDir))
         setContent {
-            AppScreen(viewModel)
+            App(viewModel)
         }
 
         lifecycleScope.launchWhenCreated {

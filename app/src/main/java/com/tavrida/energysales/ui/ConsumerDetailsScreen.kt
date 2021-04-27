@@ -1,5 +1,6 @@
 package com.tavrida.energysales.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -12,7 +13,7 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.ui.components.BackHandler
 
 @Composable
-fun ConsumerDetails(
+fun ConsumerDetailsScreen(
     consumer: Consumer,
     onClose: () -> Unit
 ) {
@@ -24,7 +25,10 @@ fun ConsumerDetails(
             }
         }
     ) {
-        Text(text = "Details: ${consumer.name}")
+        Column {
+            Text(text = "Details: ${consumer.name}")
+            CountersTable()
+        }
 
     }
 }
