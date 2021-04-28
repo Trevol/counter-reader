@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +20,6 @@ import com.tavrida.energysales.data_access.models.Consumer
 @Composable
 fun ConsumersList(consumers: List<Consumer>, onClick: (Consumer) -> Unit) {
     var activeItem by remember { mutableStateOf<Consumer?>(null) }
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(5.dp)

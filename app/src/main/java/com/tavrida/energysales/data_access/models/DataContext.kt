@@ -108,7 +108,8 @@ class DataContext(val db: Database) {
                 consumerId = it[t.consumerId].value,
                 K = it[t.K],
                 prevReading = prevReadingByCounterId[counterId]!!,
-                readings = readings.filter { it.counterId == counterId }
+                readings = readings.filter { it.counterId == counterId },
+                comment = it[t.comment]
             )
         }
 

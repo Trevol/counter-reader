@@ -1,6 +1,5 @@
 package com.tavrida.utils
 
-
 fun String.filterToInt(): Int? {
     return filter { it.isDigit() }.toIntOrNull()
 }
