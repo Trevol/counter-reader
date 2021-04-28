@@ -1,6 +1,6 @@
 package com.tavrida.utils
 
-fun Any?.toStringOrEmpty() = this?.toString() ?: ""
+fun Any?.toStringOrEmpty() = this?.toString().orEmpty()
 
 fun Any.println() = println(this)
 
