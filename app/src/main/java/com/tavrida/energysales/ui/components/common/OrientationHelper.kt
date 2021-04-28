@@ -1,4 +1,4 @@
-package com.tavrida.energysales.ui.components
+package com.tavrida.energysales.ui.components.common
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable

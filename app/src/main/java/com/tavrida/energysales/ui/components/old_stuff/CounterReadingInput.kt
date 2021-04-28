@@ -1,4 +1,4 @@
-package com.tavrida.energysales.ui
+package com.tavrida.energysales.ui.components.old_stuff
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.tavrida.energysales.ui.components.*
+import com.tavrida.energysales.ui.components.common.*
 import com.tavrida.energysales.ui.theme.CounterReaderTheme
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 

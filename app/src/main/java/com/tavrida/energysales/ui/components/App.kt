@@ -1,4 +1,4 @@
-package com.tavrida.energysales.ui
+package com.tavrida.energysales.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
-fun AppScreenPreview() {
+fun AppPreview() {
     val viewModel = remember { DummyViewModel() }
     App(viewModel)
 }

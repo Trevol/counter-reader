@@ -1,77 +1,22 @@
-package com.tavrida.energysales.ui
+package com.tavrida.energysales.ui.components.counter
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
-import com.tavrida.utils.suppressedClickable
 import com.tavrida.utils.toStringOrEmpty
 
-@Composable
-fun ConsumerDetailsScreen(
-    consumer: Consumer,
-    onClose: () -> Unit
-) {
-    BackHandler(onBack = onClose)
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .suppressedClickable(),
-        topBar = {
-            IconButton(onClick = onClose) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier.padding(start = 10.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(text = consumer.name)
-            CountersItems(consumer.counters)
-        }
-
-    }
-}
-
-@Composable
-fun CountersItems(counters: List<Counter>) {
-    counters.forEach {
-        CounterCard(
-            counter = it,
-            modifier = Modifier
-                .padding(10.dp, 5.dp)
-                .fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun CounterCard(modifier: Modifier = Modifier, counter: Counter) {
-    Card(modifier = modifier, elevation = 10.dp) {
-        CounterPropertyGrid(counter, modifier = Modifier.padding(10.dp))
-    }
-}
-
-private object CounterPropertyGrid {
+object CounterPropertyGrid {
     private object rowStyle {
         val padding = Modifier.padding(0.dp, 5.dp)
     }

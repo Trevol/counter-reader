@@ -1,4 +1,4 @@
-package com.tavrida.energysales.ui.components
+package com.tavrida.energysales.ui.components.common
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import com.tavrida.utils.filterToFloat
+import com.tavrida.utils.filterToInt
 import com.tavrida.utils.toStringOrEmpty
 
 @Composable
-fun OutlinedFloatField(
-    value: Float?,
-    onValueChange: (Float?) -> Unit,
+fun OutlinedIntegerField(
+    value: Int?,
+    onValueChange: (Int?) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -37,7 +37,7 @@ fun OutlinedFloatField(
 ) {
     OutlinedTextField(
         value = value.toStringOrEmpty(),
-        onValueChange = { onValueChange(it.filterToFloat()) },
+        onValueChange = { onValueChange(it.filterToInt()) },
         modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
@@ -56,3 +56,5 @@ fun OutlinedFloatField(
         colors
     )
 }
+
+
