@@ -72,7 +72,26 @@ object CounterPropertyGrid {
     }
 
     @Composable
-    operator fun invoke(counter: Counter, modifier: Modifier = Modifier) {
+    fun CurrentReadingCell(counter: Counter, onClick: () -> Unit) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+        ) {
+            ValueCell(value = counter.currentReading?.reading)
+            Icon(
+                imageVector = Icons.Outlined.Edit,
+                contentDescription = "Редактировать показания"
+            )
+        }
+    }
+
+    @Composable
+    operator fun invoke(
+        counter: Counter,
+        modifier: Modifier = Modifier,
+        onCurrentReadingClick: () -> Unit
+    ) {
         Column(modifier = modifier) {
             PropertyRow("Заводской №", counter.serialNumber)
             PropertyRow("К трансф", counter.K)
@@ -80,17 +99,7 @@ object CounterPropertyGrid {
             PropertyRow("Расход", counter.prevReading.consumption)
             PropertyRow("Пред. показ.", counter.prevReading.reading)
             PropertyRow("Наст. показ.") {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { }
-                ) {
-                    ValueCell(value = counter.currentReading?.reading)
-                    Icon(
-                        imageVector = Icons.Outlined.Edit,
-                        contentDescription = "Редактировать показания"
-                    )
-                }
+                CurrentReadingCell(counter = counter, onClick = onCurrentReadingClick)
             }
         }
     }
