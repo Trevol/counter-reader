@@ -8,6 +8,10 @@ fun String.filterToFloat(): Float? {
     return removeNonFloatChars().toFloatOrNull()
 }
 
+fun String.filterToDouble(): Double? {
+    return removeNonFloatChars().toDoubleOrNull()
+}
+
 private fun String.removeNonFloatChars() =
     filter { it.isDigit() || it == DECIMAL_POINT }
         .removeExtraDecimalPoints()
