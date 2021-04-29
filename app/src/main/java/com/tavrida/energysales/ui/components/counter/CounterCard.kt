@@ -1,18 +1,17 @@
 package com.tavrida.energysales.ui.components.counter
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
@@ -52,7 +51,18 @@ fun EnterReadingDialog(
 ) {
     var reading by remember { mutableStateOf(null as Double?) }
     val context = LocalContext.current
+
     AlertDialog(
+        text = {
+            Column {
+                Text("Показания для ${counter.serialNumber}:")
+                Text("Пред. показ.: ${counter.prevReading.reading}")
+                OutlinedDoubleField(
+                    value = reading,
+                    onValueChange = { reading = it }
+                )
+            }
+        },
         onDismissRequest = onDismiss,
         confirmButton = {
             IconButton(
@@ -68,9 +78,10 @@ fun EnterReadingDialog(
                 Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
             }
         },
-        title = "Показания для ${counter.serialNumber}".text(),
-        text = {
-            OutlinedDoubleField(value = reading, onValueChange = { reading = it })
+        dismissButton = {
+            IconButton(onClick = onDismiss) {
+                Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "Отмена")
+            }
         }
     )
 }
