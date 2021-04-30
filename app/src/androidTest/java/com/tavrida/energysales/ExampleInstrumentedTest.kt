@@ -1,5 +1,6 @@
 package com.tavrida.energysales
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tavrida.energysales.data_access.dbmodel.tables.allTables
@@ -107,7 +108,7 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
                 consumerId = -1,
                 K = K,
                 prevReading = prevReading,
-                readings = readings,
+                readings = readings.toMutableStateList(),
                 comment = "Счетчик $serialNumber потребителя $consumerName!!"
             )
 

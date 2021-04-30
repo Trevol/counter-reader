@@ -2,6 +2,7 @@ package com.tavrida.energysales.ui.components.counter
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
@@ -14,8 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Counter
+import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
 import com.tavrida.energysales.ui.components.common.text
+import java.time.LocalDateTime
 
 @Composable
 fun CounterCard(modifier: Modifier = Modifier, counter: Counter) {
@@ -33,12 +36,27 @@ fun CounterCard(modifier: Modifier = Modifier, counter: Counter) {
     if (inputReading) {
         EnterReadingDialog(
             counter,
+            counter.currentReading,
             onDismiss = {
                 inputReading = false
             },
-            onNewReading = { counter, reading ->
+            onNewReading = { counter, newReading ->
+                applyNewReading(counter, newReading)
                 inputReading = false
             }
+        )
+    }
+}
+
+private fun applyNewReading(counter: Counter, newReading: Double) {
+    // TODO("Save to Database!!!")
+    val reading = counter.currentReading
+    if (reading != null) {
+        reading.reading = newReading
+        reading.readTime = LocalDateTime.now()
+    } else {
+        counter.readings.add(
+            CounterReading(-1, counter.id, newReading, LocalDateTime.now(), null)
         )
     }
 }
@@ -46,11 +64,22 @@ fun CounterCard(modifier: Modifier = Modifier, counter: Counter) {
 @Composable
 fun EnterReadingDialog(
     counter: Counter,
+    currentReading: CounterReading?,
     onDismiss: () -> Unit,
     onNewReading: (Counter, Double) -> Unit
 ) {
-    var reading by remember { mutableStateOf(null as Double?) }
+    var reading by remember { mutableStateOf(currentReading?.reading) }
     val context = LocalContext.current
+
+    fun tryConfirm() {
+        val r = reading
+        if (r != null && r >= 0) {
+            onNewReading(counter, r)
+        } else {
+            Toast.makeText(context, "Показания некорректны!", Toast.LENGTH_SHORT).show()
+        }
+
+    }
 
     AlertDialog(
         text = {
@@ -59,21 +88,15 @@ fun EnterReadingDialog(
                 Text("Пред. показ.: ${counter.prevReading.reading}")
                 OutlinedDoubleField(
                     value = reading,
-                    onValueChange = { reading = it }
+                    onValueChange = { reading = it },
+                    keyboardActions = KeyboardActions(onDone = { tryConfirm() })
                 )
             }
         },
         onDismissRequest = onDismiss,
         confirmButton = {
             IconButton(
-                onClick = {
-                    val r = reading
-                    if (r != null && r >= 0) {
-                        onNewReading(counter, r)
-                    } else {
-                        Toast.makeText(context, "Показания некорректны!", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                onClick = { tryConfirm() }
             ) {
                 Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
             }

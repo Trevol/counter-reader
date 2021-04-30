@@ -1,5 +1,8 @@
 package com.tavrida.energysales.data_access.models
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import com.tavrida.energysales.data_access.dbmodel.tables.ConsumersTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CounterReadingsTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CountersTable
@@ -108,7 +111,7 @@ class DataContext(val db: Database) {
                 consumerId = it[t.consumerId].value,
                 K = it[t.K],
                 prevReading = prevReadingByCounterId[counterId]!!,
-                readings = readings.filter { it.counterId == counterId },
+                readings = readings.filter { it.counterId == counterId }.toMutableStateList(),
                 comment = it[t.comment]
             )
         }
