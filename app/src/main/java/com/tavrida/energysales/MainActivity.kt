@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    override fun onBackPressed() {
+    /*override fun onBackPressed() {
         super.onBackPressed()
     }
 
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-    }
+    }*/
 
     companion object {
     }
