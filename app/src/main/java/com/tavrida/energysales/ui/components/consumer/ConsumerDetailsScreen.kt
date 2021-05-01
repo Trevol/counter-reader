@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Consumer
+import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.ui.components.common.BackButton
 import com.tavrida.energysales.ui.components.counter.CountersItems
 import com.tavrida.utils.suppressedClickable
@@ -16,6 +17,7 @@ import com.tavrida.utils.suppressedClickable
 @Composable
 fun ConsumerDetailsScreen(
     consumer: Consumer,
+    activeCounter: Counter?,
     onClose: () -> Unit
 ) {
     BackHandler(onBack = onClose)
@@ -31,7 +33,7 @@ fun ConsumerDetailsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(text = consumer.name)
-            CountersItems(consumer.counters)
+            CountersItems(consumer.counters, activeCounter = activeCounter)
         }
     }
 }

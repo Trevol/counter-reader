@@ -18,11 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tavrida.energysales.data_access.models.Consumer
-import com.tavrida.energysales.ui.components.common.TODO_UI
 
 @Composable
-fun ConsumersList(consumers: List<Consumer>, onClick: (Consumer) -> Unit) {
-    var activeItem by remember { mutableStateOf<Consumer?>(null) }
+fun ConsumersList(consumers: List<Consumer>, selectedConsumer: Consumer?, onClick: (Consumer) -> Unit) {
+    var activeItem by remember { mutableStateOf(selectedConsumer) }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(5.dp)

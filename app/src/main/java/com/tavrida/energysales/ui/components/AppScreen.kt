@@ -1,14 +1,17 @@
 package com.tavrida.energysales.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.tavrida.energysales.ui.components.consumer.ConsumersList
 import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
 import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
+import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,87 +19,31 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun App(viewModel: CounterReadingViewModel) {
-    ConsumersListScreen(viewModel)
+    val context = LocalContext.current
+    var scanByCamera by remember { mutableStateOf(false) }
 
-    if (viewModel.selectedItem != null) {
+    ConsumersListScreen(viewModel, onCounterScannerRequest = { scanByCamera = true })
+
+    if (viewModel.selectedConsumer != null) {
         ConsumerDetailsScreen(
-            consumer = viewModel.selectedItem!!,
-            onClose = { viewModel.selectedItem = null }
+            consumer = viewModel.selectedConsumer!!,
+            activeCounter = viewModel.activeCounter,
+            onClose = { viewModel.clearSelection() }
+        )
+    }
+
+    if (scanByCamera) {
+        CounterScanner(
+            onCounterSerialNumberReady = { sn ->
+                scanByCamera = false
+                val found = viewModel.activateCounterBySerialNumber(sn)
+                if (!found) {
+                    Toast.makeText(context, "Счетчик №($sn) не найден!", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onDismiss = { scanByCamera = false }
         )
     }
 
     CircularBusyIndicator(viewModel.busy)
 }
-
-@Composable
-private fun ConsumersListScreen(viewModel: CounterReadingViewModel) {
-    Scaffold(
-        topBar = {
-            ConsumerCounterSearch("", { query -> viewModel.searchCustomers(query) })
-        },
-        floatingActionButton = {
-            ScanByCameraButton()
-        }
-    ) {
-        ConsumersList(viewModel.visibleCustomers, onClick = { viewModel.selectedItem = it })
-    }
-}
-
-
-@Composable
-private fun ScanByCameraButton() {
-    FloatingActionButton(
-        onClick = {
-            //TODO: scan by camera and select consumer/counter
-        }
-    ) {
-        Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
-    }
-
-}
-
-@Composable
-private fun ConsumerCounterSearch(
-    initialQuery: String,
-    onQueryChange: (String) -> Unit,
-    debounce: Long = 500
-) {
-    var searching by remember { mutableStateOf(false) }
-    var localQuery by remember { mutableStateOf(initialQuery) }
-    val scope = rememberCoroutineScope()
-    var searchJob by remember { mutableStateOf<Job?>(null) }
-
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = !searching,
-        value = localQuery,
-        onValueChange = {
-            localQuery = it
-            searchJob?.cancel()
-            searchJob = scope.launch {
-                delay(debounce)
-                searching = true
-                onQueryChange(localQuery)
-                searching = false
-            }
-        },
-        leadingIcon = {
-            Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
-        },
-        trailingIcon = {
-            IconButton(
-                enabled = !searching,
-                onClick = {
-                    localQuery = ""
-                    searching = true
-                    onQueryChange(localQuery)
-                    searching = false
-                }
-            ) {
-                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
-            }
-
-        }
-    )
-}
-

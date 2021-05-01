@@ -2,6 +2,7 @@ package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
 import com.tavrida.energysales.data_access.models.Consumer
+import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.DataContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,23 +19,46 @@ abstract class CounterReadingViewModel {
         return !busy && counterReading.isValid
     }
 
-    protected var allCustomers = listOf<Consumer>()
-    var visibleCustomers by mutableStateOf(listOf<Consumer>())
+    protected var allConsumers = listOf<Consumer>()
+    var visibleConsumers by mutableStateOf(listOf<Consumer>())
     abstract fun loadData()
 
-    var selectedItem by mutableStateOf<Consumer?>(null)
+    var selectedConsumer by mutableStateOf<Consumer?>(null)
+    var activeCounter by mutableStateOf<Counter?>(null)
+
+    fun clearSelection(){
+        selectedConsumer = null
+        activeCounter = null
+    }
 
     fun searchCustomers(query: String) {
         if (query == "")
-            visibleCustomers = allCustomers
+            visibleConsumers = allConsumers
         else {
-            visibleCustomers = allCustomers.filter {
+            visibleConsumers = allConsumers.filter {
                 it.name.contains(query, ignoreCase = true) ||
                         it.counters.any {
                             it.serialNumber.toString().contains(query, ignoreCase = true)
                         }
             }
         }
+    }
+
+    fun activateCounterBySerialNumber(sn: Int): Boolean {
+        clearSelection()
+        if (sn <= 0 ){
+            return false
+        }
+        for(consumer in allConsumers){
+            for(counter in consumer.counters){
+                if(counter.serialNumber == sn){
+                    selectedConsumer = consumer
+                    activeCounter = counter
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
 
@@ -57,7 +81,7 @@ class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() 
     override fun loadData() {
         busy = true
         try {
-            allCustomers = dataContext.loadAll()
+            allConsumers = dataContext.loadAll()
             searchCustomers("")
         } finally {
             busy = false

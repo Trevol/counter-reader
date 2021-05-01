@@ -11,21 +11,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
-import com.tavrida.energysales.ui.components.common.text
 import java.time.LocalDateTime
 
 @Composable
-fun CounterCard(modifier: Modifier = Modifier, counter: Counter) {
+fun CounterCard(modifier: Modifier = Modifier, counter: Counter, isActive: Boolean) {
     var inputReading by remember {
-        mutableStateOf(false)
+        mutableStateOf(isActive)
     }
-    Card(modifier = modifier, elevation = 10.dp) {
+    val color = if (isActive) Color(0xFFF8B195) else MaterialTheme.colors.surface
+
+    Card(modifier = modifier, elevation = 10.dp, backgroundColor = color) {
         CounterPropertyGrid(counter,
             modifier = Modifier.padding(10.dp),
             onCurrentReadingClick = {
