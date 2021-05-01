@@ -1,21 +1,13 @@
 package com.tavrida.energysales.ui.components
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.tavrida.energysales.ui.components.consumer.ConsumersList
 import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
 import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
 import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
+import com.tavrida.energysales.ui.components.counter.CounterScanner
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun App(viewModel: CounterReadingViewModel) {

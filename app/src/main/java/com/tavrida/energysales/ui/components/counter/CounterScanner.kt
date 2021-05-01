@@ -1,4 +1,4 @@
-package com.tavrida.energysales.ui.components
+package com.tavrida.energysales.ui.components.counter
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import com.tavrida.utils.suppressedClickable
 
 @Composable
 fun CounterScanner(onCounterSerialNumberReady: (Int) -> Unit, onDismiss: () -> Unit) {
-    var serialNumberValue by remember { mutableStateOf(123 as Int?) }
+    var serialNumberValue by remember { mutableStateOf(null as Int?) }
 
     @Composable
     fun DoneButton() {
