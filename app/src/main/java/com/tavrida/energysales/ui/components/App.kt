@@ -1,31 +1,41 @@
 package com.tavrida.energysales.ui.components
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
+import android.widget.Toast
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
+import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
+import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
+import com.tavrida.energysales.ui.components.counter.CounterScanner
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun AppPreview() {
-    val viewModel = remember { DummyViewModel() }
-    App(viewModel)
-}
+fun App(viewModel: CounterReadingViewModel) {
+    val context = LocalContext.current
+    var scanByCamera by remember { mutableStateOf(false) }
 
-private class DummyViewModel : CounterReadingViewModel() {
-    override var busy: Boolean = false
-    override fun save() {
-        busy = true
-        GlobalScope.launch {
-            delay(3000)
-            counterReading.clear()
-            busy = false
-        }
+    ConsumersListScreen(viewModel, onCounterScannerRequest = { scanByCamera = true })
+
+    if (viewModel.selectedConsumer != null) {
+        ConsumerDetailsScreen(
+            consumer = viewModel.selectedConsumer!!,
+            activeCounter = viewModel.activeCounter,
+            onClose = { viewModel.clearSelection() }
+        )
     }
 
-    override fun loadData() {
+    if (scanByCamera) {
+        CounterScanner(
+            onCounterSerialNumberReady = { sn ->
+                scanByCamera = false
+                val found = viewModel.activateCounterBySerialNumber(sn)
+                if (!found) {
+                    Toast.makeText(context, "Счетчик №($sn) не найден!", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onDismiss = { scanByCamera = false }
+        )
     }
+
+    CircularBusyIndicator(viewModel.busy)
 }

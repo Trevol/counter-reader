@@ -12,11 +12,10 @@ import org.jetbrains.exposed.sql.Database
 abstract class CounterReadingViewModel {
     abstract var busy: Boolean
         protected set
-    val counterReading = CounterReadingInputState()
 
     abstract fun save()
     fun canSave(): Boolean {
-        return !busy && counterReading.isValid
+        return !busy
     }
 
     protected var allConsumers = listOf<Consumer>()
@@ -26,7 +25,7 @@ abstract class CounterReadingViewModel {
     var selectedConsumer by mutableStateOf<Consumer?>(null)
     var activeCounter by mutableStateOf<Counter?>(null)
 
-    fun clearSelection(){
+    fun clearSelection() {
         selectedConsumer = null
         activeCounter = null
     }
@@ -46,12 +45,12 @@ abstract class CounterReadingViewModel {
 
     fun activateCounterBySerialNumber(sn: Int): Boolean {
         clearSelection()
-        if (sn <= 0 ){
+        if (sn <= 0) {
             return false
         }
-        for(consumer in allConsumers){
-            for(counter in consumer.counters){
-                if(counter.serialNumber == sn){
+        for (consumer in allConsumers) {
+            for (counter in consumer.counters) {
+                if (counter.serialNumber == sn) {
                     selectedConsumer = consumer
                     activeCounter = counter
                     return true
@@ -72,8 +71,6 @@ class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() 
         }
         busy = true
         GlobalScope.launch {
-            saveReading()
-            counterReading.clear()
             busy = false
         }
     }
@@ -86,15 +83,5 @@ class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() 
         } finally {
             busy = false
         }
-    }
-
-    private fun saveReading() {
-        TODO()
-        /*transaction(db) {
-            Tables.DummyCounterReading.insert {
-                it[counterId] = counterReading.counterId!!
-                it[reading] = counterReading.reading!!
-            }
-        }*/
     }
 }
