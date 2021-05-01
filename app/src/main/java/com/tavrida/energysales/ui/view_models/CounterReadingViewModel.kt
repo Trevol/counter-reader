@@ -3,10 +3,6 @@ package com.tavrida.energysales.ui.view_models
 import androidx.compose.runtime.*
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
-import com.tavrida.energysales.data_access.models.DataContext
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.jetbrains.exposed.sql.Database
 
 
 abstract class CounterReadingViewModel {
@@ -61,27 +57,3 @@ abstract class CounterReadingViewModel {
     }
 }
 
-class CounterReadingViewModelImpl(val db: Database) : CounterReadingViewModel() {
-    override var busy by mutableStateOf(false)
-    val dataContext = DataContext(db)
-
-    override fun save() {
-        if (!canSave()) {
-            return
-        }
-        busy = true
-        GlobalScope.launch {
-            busy = false
-        }
-    }
-
-    override fun loadData() {
-        busy = true
-        try {
-            allConsumers = dataContext.loadAll()
-            searchCustomers("")
-        } finally {
-            busy = false
-        }
-    }
-}
