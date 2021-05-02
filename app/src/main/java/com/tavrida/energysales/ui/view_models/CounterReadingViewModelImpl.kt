@@ -1,6 +1,8 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.tavrida.energysales.data_access.models.DataContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

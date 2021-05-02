@@ -12,7 +12,6 @@ import com.tavrida.energysales.data_access.models.Consumer
 
 @Composable
 fun ConsumersList(consumers: List<Consumer>, selectedConsumer: Consumer?, onClick: (Consumer) -> Unit) {
-    var activeItem by remember { mutableStateOf(selectedConsumer) }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(5.dp)
@@ -20,9 +19,8 @@ fun ConsumersList(consumers: List<Consumer>, selectedConsumer: Consumer?, onClic
         items(consumers) { consumer ->
             ConsumerListItem(
                 consumer,
-                isActive = activeItem == consumer,
+                isActive = selectedConsumer == consumer,
                 onClick = {
-                    activeItem = consumer
                     onClick(consumer)
                 }
             )

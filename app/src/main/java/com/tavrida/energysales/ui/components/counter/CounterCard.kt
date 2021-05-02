@@ -19,93 +19,18 @@ import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
 import java.time.LocalDateTime
 
+private val ActiveColor = Color(0xFFF8B195)
+
 @Composable
-fun CounterCard(modifier: Modifier = Modifier, counter: Counter, isActive: Boolean) {
-    var inputReading by remember {
-        mutableStateOf(isActive)
-    }
-    val color = if (isActive) Color(0xFFF8B195) else MaterialTheme.colors.surface
+fun CounterCard(modifier: Modifier = Modifier, counter: Counter, isActive: Boolean, onReadingEditRequest: (Counter)-> Unit) {
+    val color = if (isActive) ActiveColor else MaterialTheme.colors.surface
 
     Card(modifier = modifier, elevation = 10.dp, backgroundColor = color) {
         CounterPropertyGrid(counter,
             modifier = Modifier.padding(10.dp),
             onCurrentReadingClick = {
-                inputReading = true
+                onReadingEditRequest(counter)
             }
         )
     }
-    if (inputReading) {
-        EnterReadingDialog(
-            counter,
-            counter.currentReading,
-            onDismiss = {
-                inputReading = false
-            },
-            onNewReading = { counter, newReading ->
-                applyNewReading(counter, newReading)
-                inputReading = false
-            }
-        )
-    }
-}
-
-private fun applyNewReading(counter: Counter, newReading: Double) {
-    // TODO("Save to Database!!!")
-    val reading = counter.currentReading
-    if (reading != null) {
-        reading.reading = newReading
-        reading.readTime = LocalDateTime.now()
-    } else {
-        counter.readings.add(
-            CounterReading(-1, counter.id, newReading, LocalDateTime.now(), null)
-        )
-    }
-}
-
-@Composable
-fun EnterReadingDialog(
-    counter: Counter,
-    currentReading: CounterReading?,
-    onDismiss: () -> Unit,
-    onNewReading: (Counter, Double) -> Unit
-) {
-    var reading by remember { mutableStateOf(currentReading?.reading) }
-    val context = LocalContext.current
-
-    fun tryConfirm() {
-        val r = reading
-        if (r != null && r >= 0) {
-            onNewReading(counter, r)
-        } else {
-            Toast.makeText(context, "Показания некорректны!", Toast.LENGTH_SHORT).show()
-        }
-
-    }
-
-    AlertDialog(
-        text = {
-            Column {
-                Text("Показания для ${counter.serialNumber}:")
-                Text("Пред. показ.: ${counter.prevReading.reading}")
-                OutlinedDoubleField(
-                    value = reading,
-                    onValueChange = { reading = it },
-                    keyboardActions = KeyboardActions(onDone = { tryConfirm() })
-                )
-            }
-        },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            IconButton(
-                onClick = { tryConfirm() }
-            ) {
-                Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
-            }
-        },
-        dismissButton = {
-            IconButton(onClick = onDismiss) {
-                Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "Отмена")
-            }
-        }
-    )
 }

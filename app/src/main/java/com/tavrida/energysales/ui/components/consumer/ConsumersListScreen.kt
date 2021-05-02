@@ -28,8 +28,8 @@ fun ConsumersListScreen(
     ) {
         ConsumersList(
             viewModel.visibleConsumers,
-            selectedConsumer = viewModel.selectedConsumer,
-            onClick = { viewModel.selectedConsumer = it }
+            selectedConsumer = viewModel.selectedConsumer?.consumer,
+            onClick = { viewModel.selectConsumer(it, showDetails = true) }
         )
     }
 }

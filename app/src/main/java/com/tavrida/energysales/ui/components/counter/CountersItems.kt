@@ -8,14 +8,19 @@ import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Counter
 
 @Composable
-fun CountersItems(counters: List<Counter>, activeCounter: Counter?) {
+fun CountersItems(
+    counters: List<Counter>,
+    selectedCounter: Counter?,
+    onReadingEditRequest: (Counter) -> Unit
+) {
     counters.forEach {
         CounterCard(
-            counter = it,
-            isActive = it == activeCounter,
             modifier = Modifier
                 .padding(10.dp, 5.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            counter = it,
+            isActive = it == selectedCounter,
+            onReadingEditRequest = onReadingEditRequest
         )
     }
 }

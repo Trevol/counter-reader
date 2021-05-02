@@ -16,11 +16,14 @@ fun App(viewModel: CounterReadingViewModel) {
 
     ConsumersListScreen(viewModel, onCounterScannerRequest = { scanByCamera = true })
 
-    if (viewModel.selectedConsumer != null) {
+    val selectedConsumerState = viewModel.selectedConsumer
+    if (selectedConsumerState?.showDetails == true) {
         ConsumerDetailsScreen(
-            consumer = viewModel.selectedConsumer!!,
-            activeCounter = viewModel.activeCounter,
-            onClose = { viewModel.clearSelection() }
+            consumerDetailsState = selectedConsumerState,
+            onClose = {
+                selectedConsumerState.selectedCounter = null
+                selectedConsumerState.showDetails = false
+            }
         )
     }
 
