@@ -19,7 +19,7 @@ fun CountersItems(
                 .padding(10.dp, 5.dp)
                 .fillMaxWidth(),
             counter = it,
-            isActive = it == selectedCounter,
+            isActive = it === selectedCounter,
             onReadingEditRequest = onReadingEditRequest
         )
     }

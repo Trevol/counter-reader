@@ -4,7 +4,9 @@ import androidx.compose.runtime.*
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 
-class ConsumerDetailsState(val consumer: Consumer, showDetails: Boolean) {
+data class IndexedConsumer(val consumer: Consumer, val index: Int)
+
+class ConsumerDetailsState(val consumer: IndexedConsumer, showDetails: Boolean) {
     class SelectedCounterState(val counter: Counter, showReadingEditor: Boolean) {
         var showReadingEditor by mutableStateOf(showReadingEditor)
     }
@@ -31,9 +33,10 @@ abstract class CounterReadingViewModel {
     abstract fun loadData()
 
     var selectedConsumer by mutableStateOf(null as ConsumerDetailsState?)
-    fun selectConsumer(consumer: Consumer, showDetails: Boolean) {
+    fun selectConsumer(consumer: IndexedConsumer, showDetails: Boolean) {
         selectedConsumer = ConsumerDetailsState(consumer, showDetails = showDetails)
     }
+
     fun clearSelection() {
         selectedConsumer = null
     }
@@ -57,18 +60,35 @@ abstract class CounterReadingViewModel {
         if (sn <= 0) {
             return false
         }
-        for (consumer in allConsumers) {
-            for (counter in consumer.counters) {
-                if (counter.serialNumber == sn) {
-                    selectedConsumer = ConsumerDetailsState(consumer, showDetails = true)
-                        .apply {
-                            selectCounter(counter, showReadingEditor = true)
-                        }
-                    return true
+
+        val found = allConsumers.findBySn(sn) ?: return false
+
+        selectedConsumer = ConsumerDetailsState(found.consumer, showDetails = true)
+            .apply {
+                selectCounter(found.counter, showReadingEditor = true)
+            }
+
+        return true
+    }
+
+    companion object {
+        private data class IndexedConsumerWithCounter(
+            val consumer: IndexedConsumer,
+            val counter: Counter
+        )
+
+        private fun List<Consumer>.findBySn(sn: Int): IndexedConsumerWithCounter? {
+            forEachIndexed { consumerIndex, consumer ->
+                val counter = consumer.counters.firstOrNull { it.serialNumber == sn }
+                if (counter != null) {
+                    return IndexedConsumerWithCounter(
+                        IndexedConsumer(consumer, consumerIndex),
+                        counter
+                    )
                 }
             }
+            return null
         }
-        return false
     }
 }
 

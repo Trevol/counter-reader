@@ -72,7 +72,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:${rootProject.extra["exposedVersion"]}")
     implementation("org.slf4j:slf4j-simple:1.7.30")
 
-    testImplementation("junit:junit:4.+")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")

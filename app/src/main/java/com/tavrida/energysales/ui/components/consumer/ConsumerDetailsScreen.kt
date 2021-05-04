@@ -40,9 +40,9 @@ fun ConsumerDetailsScreen(
                 .padding(start = 10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(text = consumerDetailsState.consumer.name)
+            Text(text = consumerDetailsState.consumer.consumer.name)
             CountersItems(
-                consumerDetailsState.consumer.counters,
+                consumerDetailsState.consumer.consumer.counters,
                 selectedCounter = consumerDetailsState.selectedCounter?.counter,
                 onReadingEditRequest = {
                     consumerDetailsState.selectCounter(it, true)
