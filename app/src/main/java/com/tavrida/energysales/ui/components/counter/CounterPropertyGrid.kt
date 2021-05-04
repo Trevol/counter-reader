@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tavrida.energysales.data_access.models.Counter
+import com.tavrida.utils.noTrailingZero
 import com.tavrida.utils.toStringOrEmpty
 
 object CounterPropertyGrid {
@@ -78,7 +79,7 @@ object CounterPropertyGrid {
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
         ) {
-            ValueCell(value = counter.currentReading?.reading)
+            ValueCell(value = counter.currentReading?.reading.noTrailingZero())
             Icon(
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = "Редактировать показания"
@@ -94,10 +95,10 @@ object CounterPropertyGrid {
     ) {
         Column(modifier = modifier) {
             PropertyRow("Заводской №", counter.serialNumber)
-            PropertyRow("К трансф", counter.K)
+            PropertyRow("К трансф", counter.K.noTrailingZero())
             PropertyRow("Примечание", counter.comment)
-            PropertyRow("Расход", counter.prevReading.consumption)
-            PropertyRow("Пред. показ.", counter.prevReading.reading)
+            PropertyRow("Расход", counter.prevReading.consumption.noTrailingZero())
+            PropertyRow("Пред. показ.", counter.prevReading.reading.noTrailingZero())
             PropertyRow("Наст. показ.") {
                 CurrentReadingCell(counter = counter, onClick = onCurrentReadingClick)
             }

@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
+import com.tavrida.utils.noTrailingZero
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,7 +42,7 @@ fun EnterReadingDialog(
         text = {
             Column {
                 Text("Показания для ${counter.serialNumber}:")
-                Text("Пред. показ.: ${counter.prevReading.reading}")
+                Text("Пред. показ.: ${counter.prevReading.reading.noTrailingZero()}")
                 OutlinedDoubleField(
                     modifier = Modifier.focusRequester(focusRequester),
                     value = newReading,
