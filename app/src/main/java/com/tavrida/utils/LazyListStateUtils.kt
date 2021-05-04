@@ -17,15 +17,15 @@ fun LazyListState.visibleItemsIndexes() = layoutInfo.visibleItemsInfo.let {
 
 fun LazyListState.isItemNotVisible(index: Int) = !isItemVisible(index)
 
-suspend fun LazyListState.scrollToIfNotVisible(index: Int?, scrollOffset: Int = 0) {
+suspend fun LazyListState.scrollToItemIfNotVisible(index: Int?, scrollOffset: Int = 0) {
     //https://stackoverflow.com/questions/66712286/get-last-visible-item-index-in-jetpack-compose-lazycolumn
     if (index != null && isItemNotVisible(index)) {
         scrollToItem(index, scrollOffset)
     }
 }
 
-fun LazyListState.scrollToIfNotVisible(scope: CoroutineScope, index: Int?, scrollOffset: Int = 0) {
+fun LazyListState.scrollToItemIfNotVisible(scope: CoroutineScope, index: Int?, scrollOffset: Int = 0) {
     scope.launch {
-        scrollToIfNotVisible(index, scrollOffset)
+        scrollToItemIfNotVisible(index, scrollOffset)
     }
 }
