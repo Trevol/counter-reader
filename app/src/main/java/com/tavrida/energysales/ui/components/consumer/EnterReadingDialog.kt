@@ -37,7 +37,16 @@ fun EnterReadingDialog(
     LaunchedEffect(key1 = counter.id) {
         launch { focusRequester.requestFocus() }
     }
+    // TODO: make AutoFocusable wrapper
+    /*
+    @Composable
+    fun AutoFocusable(content: @Composable AutoFocusScope.()->Unit){
+    }
 
+    */
+    /*TODO("edit internal string value and convert to double ot confirmation step")
+    TODO("isError = value.isNotEmpty() && value.isInvalidDouble()")
+    TODO("confirm if value.isNotEmpy() && value.isValidDouble()")*/
     AlertDialog(
         text = {
             Column {
@@ -69,7 +78,7 @@ fun EnterReadingDialog(
     )
 }
 
-fun tryConfirm(
+private fun tryConfirm(
     counter: Counter,
     newReading: Double?,
     onNewReading: (Counter, Double) -> Unit,
