@@ -3,6 +3,7 @@ package com.tavrida.energysales.ui.components.consumer
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -21,6 +22,7 @@ import com.tavrida.energysales.ui.components.common.OutlinedDoubleField
 import com.tavrida.utils.noTrailingZero
 import kotlinx.coroutines.launch
 
+/*
 @Composable
 fun EnterReadingDialog(
     counter: Counter,
@@ -37,13 +39,6 @@ fun EnterReadingDialog(
         launch { focusRequester.requestFocus() }
     }
 
-    // TODO: make AutoFocusable wrapper
-    /*
-    @Composable
-    fun AutoFocusable(content: @Composable AutoFocusScope.()->Unit){
-    }
-
-    */
     val isError = newReading.isNotEmpty() && newReading.isInvalidDouble()
     AlertDialog(
         text = {
@@ -80,6 +75,73 @@ fun EnterReadingDialog(
             }
         }
     )
+}
+*/
+
+@Composable
+fun EnterReadingDialog(
+    counter: Counter,
+    currentReading: CounterReading?,
+    onDismiss: () -> Unit,
+    onNewReading: (Counter, Double) -> Unit
+) {
+    var newReading by remember { mutableStateOf(currentReading?.reading.noTrailingZero()) }
+    val context = LocalContext.current
+    val onConfirm = { tryConfirm(counter, newReading, onNewReading, context) }
+
+    val isError = newReading.isNotEmpty() && newReading.isInvalidDouble()
+    AlertDialog(
+        text = {
+            Column {
+                Text("Показания для ${counter.serialNumber}:")
+                Text("Пред. показ.: ${counter.prevReading.reading.noTrailingZero()}")
+                AutoFocusable {
+                    OutlinedTextField(
+                        modifier = Modifier.focusRequester(),
+                        value = newReading,
+                        onValueChange = { newReading = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardActions = KeyboardActions(
+                            onDone = { onConfirm() }
+                        ),
+                        isError = isError,
+                        label = {
+                            val text = if (isError) "Наст. показ. НЕКОРРЕКТНЫ" else "Наст. показ."
+                            Text(text)
+                        }
+                    )
+                }
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            IconButton(
+                onClick = { onConfirm() }
+            ) {
+                Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
+            }
+        },
+        dismissButton = {
+            IconButton(onClick = onDismiss) {
+                Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "Отмена")
+            }
+        }
+    )
+}
+
+
+class AutoFocusScope(private val focusRequester: FocusRequester = FocusRequester()) {
+    fun requestFocus() = focusRequester.requestFocus()
+    fun Modifier.focusRequester() = focusRequester(focusRequester)
+}
+
+@Composable
+fun AutoFocusable(content: @Composable AutoFocusScope.() -> Unit) {
+    val scope = remember { AutoFocusScope() }
+    LaunchedEffect(key1 = Unit) {
+        launch { scope.requestFocus() }
+    }
+    scope.content()
 }
 
 private fun String.isInvalidDouble() = toDoubleOrNull() == null
