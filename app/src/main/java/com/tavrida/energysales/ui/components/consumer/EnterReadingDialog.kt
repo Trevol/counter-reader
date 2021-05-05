@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
+import com.tavrida.energysales.ui.components.common.AutoFocusable
 import com.tavrida.utils.noTrailingZero
 
 @Composable
@@ -27,8 +28,7 @@ fun EnterReadingDialog(
     onNewReading: (Counter, Double) -> Unit
 ) {
     var newReading by remember { mutableStateOf(currentReading?.reading.noTrailingZero()) }
-    val context = LocalContext.current
-    val onConfirm = { tryConfirm(counter, newReading, onNewReading, context) }
+    val onConfirm = { tryConfirm(counter, newReading, onNewReading) }
 
     val isError = newReading.isNotEmpty() && newReading.isInvalidDouble()
     AlertDialog(
@@ -75,14 +75,10 @@ private fun String.isInvalidDouble() = toDoubleOrNull() == null
 private fun tryConfirm(
     counter: Counter,
     newReadingRawVal: String,
-    onNewReading: (Counter, Double) -> Unit,
-    context: Context
+    onNewReading: (Counter, Double) -> Unit
 ) {
     val newReading = newReadingRawVal.toDoubleOrNull()
     if (newReading != null && newReading >= 0) {
         onNewReading(counter, newReading)
-    } else {
-        Toast.makeText(context, "Показания некорректны!", Toast.LENGTH_SHORT).show()
     }
-
 }
