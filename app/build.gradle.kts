@@ -42,7 +42,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
-        kotlinCompilerVersion = "1.4.32"
     }
     packagingOptions {
         exclude ("META-INF/licenses/**")
@@ -64,7 +63,8 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.3.0-alpha07")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
+    // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
+    // implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
     implementation("com.h2database:h2:1.4.200")
     implementation("org.jetbrains.exposed:exposed-core:${rootProject.extra["exposedVersion"]}")
     implementation("org.jetbrains.exposed:exposed-dao:${rootProject.extra["exposedVersion"]}")
