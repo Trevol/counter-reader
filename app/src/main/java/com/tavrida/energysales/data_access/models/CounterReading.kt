@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import java.time.LocalDateTime
 
 class CounterReading(
-    val id: Int,
+    var id: Int,
     val counterId: Int,
     reading: Double,
     readTime: LocalDateTime,

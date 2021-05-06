@@ -3,11 +3,14 @@ package com.tavrida.energysales.ui.components
 import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.tavrida.energysales.data_access.models.Counter
+import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
 import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
 import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
 import com.tavrida.energysales.ui.components.counter.CounterScanner
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
+import java.time.LocalDateTime
 
 @Composable
 fun App(viewModel: CounterReadingViewModel) {
@@ -23,7 +26,8 @@ fun App(viewModel: CounterReadingViewModel) {
             onClose = {
                 selectedConsumerState.selectedCounter = null
                 selectedConsumerState.showDetails = false
-            }
+            },
+            onNewReading = { counter, newReading -> viewModel.applyNewReading(counter, newReading) }
         )
     }
 

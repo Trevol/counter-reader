@@ -49,7 +49,9 @@ fun EnterReadingDialog(
                         label = {
                             val text = if (isError) "Наст. показ. НЕКОРРЕКТНЫ" else "Наст. показ."
                             Text(text)
-                        }
+                        },
+                        singleLine = true,
+                        maxLines = 1,
                     )
                 }
             }

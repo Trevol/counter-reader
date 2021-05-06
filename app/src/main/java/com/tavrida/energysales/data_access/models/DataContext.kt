@@ -1,7 +1,5 @@
 package com.tavrida.energysales.data_access.models
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.tavrida.energysales.data_access.dbmodel.tables.ConsumersTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CounterReadingsTable
@@ -10,7 +8,13 @@ import com.tavrida.energysales.data_access.dbmodel.tables.PrevCounterReadingsTab
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class DataContext(val db: Database) {
+interface IDataContext {
+    fun loadAll(): List<Consumer>
+    fun updateReading(reading: CounterReading)
+    fun createReading(newReading: CounterReading)
+}
+
+class DataContext(val db: Database) : IDataContext {
     fun insertAll(consumers: List<Consumer>) {
         if (consumers.isEmpty()) {
             return
@@ -51,7 +55,7 @@ class DataContext(val db: Database) {
         }
     }
 
-    fun loadAll() = transaction(db) {
+    override fun loadAll() = transaction(db) {
         val consumerRows = ConsumersTable.selectAll()
             .orderBy(ConsumersTable.name)
             .toList()
@@ -64,6 +68,28 @@ class DataContext(val db: Database) {
             val readingRows = CounterReadingsTable.selectAll().toList()
             val prevReadingRows = PrevCounterReadingsTable.selectAll().toList()
             connectConsumerEntities(consumerRows, counterRows, readingRows, prevReadingRows)
+        }
+    }
+
+    override fun updateReading(reading: CounterReading) {
+        transaction(db) {
+            CounterReadingsTable.update({ CounterReadingsTable.id eq reading.id }) {
+                it[this.reading] = reading.reading
+                it[readTime] = reading.readTime
+                it[comment] = reading.comment
+            }
+        }
+    }
+
+    override fun createReading(newReading: CounterReading) {
+        transaction(db) {
+            val id = CounterReadingsTable.insertAndGetId {
+                it[counterId] = newReading.counterId
+                it[reading] = newReading.reading
+                it[readTime] = newReading.readTime
+                it[comment] = newReading.comment
+            }
+            newReading.id = id.value
         }
     }
 

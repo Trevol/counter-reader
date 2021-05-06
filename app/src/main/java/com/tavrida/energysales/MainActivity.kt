@@ -6,9 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.tavrida.energysales.data_access.DatabaseInstance
+import com.tavrida.energysales.data_access.models.DataContext
 import com.tavrida.energysales.ui.components.App
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
-import com.tavrida.energysales.ui.view_models.CounterReadingViewModelImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,8 +16,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: CounterReadingViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //TODO: move to external storage!!!
-        viewModel = CounterReadingViewModelImpl(DatabaseInstance.get(filesDir))
+        viewModel = CounterReadingViewModel(
+            DataContext(DatabaseInstance.get(filesDir))
+        )
         setContent {
             App(viewModel)
         }

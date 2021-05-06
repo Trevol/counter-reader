@@ -19,7 +19,8 @@ import java.time.LocalDateTime
 @Composable
 fun ConsumerDetailsScreen(
     consumerDetailsState: ConsumerDetailsState,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onNewReading: (Counter, Double) -> Unit
 ) {
     BackHandler(onBack = onClose)
     Scaffold(
@@ -54,22 +55,9 @@ fun ConsumerDetailsScreen(
                 selectedCounter.showReadingEditor = false
             },
             onNewReading = { counter, newReading ->
-                applyNewReading(counter, newReading)
+                onNewReading(counter, newReading)
                 selectedCounter.showReadingEditor = false
             }
-        )
-    }
-}
-
-private fun applyNewReading(counter: Counter, newReading: Double) {
-    // TODO("Save to Database!!!")
-    val reading = counter.currentReading
-    if (reading != null) {
-        reading.reading = newReading
-        reading.readTime = LocalDateTime.now()
-    } else {
-        counter.readings.add(
-            CounterReading(-1, counter.id, newReading, LocalDateTime.now(), null)
         )
     }
 }

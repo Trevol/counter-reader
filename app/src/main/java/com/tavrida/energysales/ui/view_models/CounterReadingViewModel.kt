@@ -3,6 +3,11 @@ package com.tavrida.energysales.ui.view_models
 import androidx.compose.runtime.*
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
+import com.tavrida.energysales.data_access.models.CounterReading
+import com.tavrida.energysales.data_access.models.IDataContext
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 data class IndexedConsumer(val consumer: Consumer, val index: Int)
 
@@ -19,18 +24,20 @@ class ConsumerDetailsState(val consumer: IndexedConsumer, showDetails: Boolean) 
     }
 }
 
-abstract class CounterReadingViewModel {
-    abstract var busy: Boolean
-        protected set
-
-    abstract fun save()
-    fun canSave(): Boolean {
-        return !busy
-    }
+class CounterReadingViewModel(val dataContext: IDataContext) {
+    var busy by mutableStateOf(false)
 
     protected var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
-    abstract fun loadData()
+    fun loadData() {
+        busy = true
+        try {
+            allConsumers = dataContext.loadAll()
+            searchCustomers("")
+        } finally {
+            busy = false
+        }
+    }
 
     var selectedConsumer by mutableStateOf(null as ConsumerDetailsState?)
     fun selectConsumer(consumer: IndexedConsumer, showDetails: Boolean) {
@@ -69,6 +76,34 @@ abstract class CounterReadingViewModel {
             }
 
         return true
+    }
+
+    fun applyNewReading(counter: Counter, newReadingValue: Double) {
+        busy {
+            val reading = counter.currentReading
+            if (reading != null) {
+                reading.reading = newReadingValue
+                reading.readTime = LocalDateTime.now()
+
+                dataContext.updateReading(reading)
+            } else {
+                val newReading =
+                    CounterReading(-1, counter.id, newReadingValue, LocalDateTime.now(), null)
+                counter.readings.add(newReading)
+                dataContext.createReading(newReading)
+            }
+        }
+    }
+
+    private fun busy(block: () -> Unit) {
+        busy = true
+        GlobalScope.launch {
+            try {
+                block()
+            } finally {
+                busy = false
+            }
+        }
     }
 
     companion object {
