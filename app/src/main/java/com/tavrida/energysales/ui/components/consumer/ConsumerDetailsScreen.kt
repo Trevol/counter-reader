@@ -9,12 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.data_access.models.Counter
-import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.BackButton
 import com.tavrida.energysales.ui.components.counter.CountersItems
+import com.tavrida.energysales.ui.components.counter.EnterReadingDialog
 import com.tavrida.energysales.ui.view_models.ConsumerDetailsState
 import com.tavrida.utils.suppressedClickable
-import java.time.LocalDateTime
 
 @Composable
 fun ConsumerDetailsScreen(

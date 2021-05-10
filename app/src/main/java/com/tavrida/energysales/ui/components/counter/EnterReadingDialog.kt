@@ -1,7 +1,5 @@
-package com.tavrida.energysales.ui.components.consumer
+package com.tavrida.energysales.ui.components.counter
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,10 +9,8 @@ import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.AutoFocusable
@@ -29,7 +25,6 @@ fun EnterReadingDialog(
 ) {
     var newReading by remember { mutableStateOf(currentReading?.reading.noTrailingZero()) }
     val onConfirm = { tryConfirm(counter, newReading, onNewReading) }
-
     val isError = newReading.isNotEmpty() && newReading.isInvalidDouble()
     AlertDialog(
         text = {
@@ -64,11 +59,11 @@ fun EnterReadingDialog(
                 Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
             }
         },
-        dismissButton = {
+        /*dismissButton = {
             IconButton(onClick = onDismiss) {
                 Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "Отмена")
             }
-        }
+        }*/
     )
 }
 
