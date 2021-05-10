@@ -72,6 +72,16 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:${rootProject.extra["exposedVersion"]}")
     implementation("org.slf4j:slf4j-simple:1.7.30")
 
+    // CameraX
+    implementation ("androidx.camera:camera-core:1.1.0-alpha04")
+    implementation ("androidx.camera:camera-camera2:1.1.0-alpha04")
+    implementation ("androidx.camera:camera-lifecycle:1.1.0-alpha04")
+
+    // CameraX View class
+    implementation ("androidx.camera:camera-view:1.0.0-alpha24")
+
+    implementation ("com.google.mlkit:barcode-scanning:16.1.1")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")

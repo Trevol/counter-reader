@@ -8,6 +8,7 @@ import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
 import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
 import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
+import com.tavrida.energysales.ui.components.counter.CounterQRCodeScanner
 import com.tavrida.energysales.ui.components.counter.CounterScanner
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import java.time.LocalDateTime
@@ -32,7 +33,17 @@ fun App(viewModel: CounterReadingViewModel) {
     }
 
     if (scanByCamera) {
-        CounterScanner(
+        CounterQRCodeScanner(
+            onDismiss = { scanByCamera = false },
+            onCounterSerialNumberReady = { sn ->
+                scanByCamera = false
+                val found = viewModel.activateCounterBySerialNumber(sn)
+                if (!found) {
+                    Toast.makeText(context, "Счетчик №($sn) не найден!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+        /*CounterScanner(
             onCounterSerialNumberReady = { sn ->
                 scanByCamera = false
                 val found = viewModel.activateCounterBySerialNumber(sn)
@@ -41,7 +52,7 @@ fun App(viewModel: CounterReadingViewModel) {
                 }
             },
             onDismiss = { scanByCamera = false }
-        )
+        )*/
     }
 
     CircularBusyIndicator(viewModel.busy)

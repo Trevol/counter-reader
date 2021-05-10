@@ -32,14 +32,12 @@ fun OrientationSelector(
 
 @Composable
 private fun OrientationSelectorExample() {
-    CounterReaderTheme {
-        OrientationSelector(
-            portrait = {
-                Text(text = "Portrait!!!")
-            },
-            landscape = {
-                Text(text = "Landscape!!!")
-            }
-        )
-    }
+    OrientationSelector(
+        portrait = {
+            Text(text = "Portrait!!!")
+        },
+        landscape = {
+            Text(text = "Landscape!!!")
+        }
+    )
 }
