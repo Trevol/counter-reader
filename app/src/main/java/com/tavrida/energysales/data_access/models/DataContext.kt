@@ -59,13 +59,13 @@ class DataContext(val db: Database) : IDataContext {
 
     override fun loadAll() = transaction(db) {
         val consumerRows = ConsumersTable.selectAll()
-            .orderBy(ConsumersTable.name)
+            .orderBy(ConsumersTable.importOrder)
             .toList()
         if (consumerRows.isEmpty()) {
             listOf()
         } else {
             val counterRows = CountersTable.selectAll()
-                .orderBy(CountersTable.serialNumber)
+                .orderBy(CountersTable.importOrder)
                 .toList()
             val readingRows = CounterReadingsTable.selectAll().toList()
             val prevReadingRows = PrevCounterReadingsTable.selectAll().toList()

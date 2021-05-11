@@ -31,16 +31,15 @@ fun ConsumerListItem(
         backgroundColor = color
     ) {
         Column(modifier = Modifier.padding(10.dp, 10.dp)) {
-            Row {
-                Text(
-                    text = consumer.name,
-                    fontSize = 24.sp
-                )
-                if (consumer.allCountersHaveRead()) {
-                    DoneMark()
-                }
-            }
+            Text(
+                text = consumer.name,
+                fontSize = 24.sp
+            )
             ShortCountersList(consumer)
+        }
+
+        if (consumer.allCountersHaveRead()) {
+            DoneMark()
         }
     }
 }

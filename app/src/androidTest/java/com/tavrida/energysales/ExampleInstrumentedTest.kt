@@ -22,6 +22,8 @@ import kotlin.system.measureTimeMillis
 class ExampleInstrumentedTest {
     @Test
     fun generateData() {
+        TODO("You are overwriting database")
+
         val dc = DbInstance(appContext().filesDir, "ENERGY_SALES_MOBILE", allTables.toList())
             .get(recreate = true)
             .let { DataContext(it) }
