@@ -31,6 +31,7 @@ fun EnterReadingDialog(
             Column {
                 Text("Показания для ${counter.serialNumber}:")
                 Text("Пред. показ.: ${counter.prevReading.reading.noTrailingZero()}")
+                Text("ImportOrder: ${counter.importOrder}")
                 AutoFocusable {
                     OutlinedTextField(
                         modifier = Modifier.focusRequester(),

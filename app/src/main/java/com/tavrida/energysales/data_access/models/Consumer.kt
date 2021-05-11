@@ -8,7 +8,7 @@ data class Consumer(
     val importOrder: Int
 ) {
     val countersInfo =
-        counters.sortedBy { it.serialNumber }.map { it.serialNumber }.joinToString(separator = ", ")
+        counters.sortedBy { it.serialNumber }.map { "${it.serialNumber}(${it.importOrder})" }.joinToString(separator = ", ")
 
     fun allCountersHaveRead() = counters.all { it.currentReading != null }
 }

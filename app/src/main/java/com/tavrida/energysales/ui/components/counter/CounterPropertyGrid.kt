@@ -95,9 +95,10 @@ object CounterPropertyGrid {
     ) {
         Column(modifier = modifier) {
             PropertyRow("Заводской №", counter.serialNumber)
-            PropertyRow("К трансф", counter.K.noTrailingZero())
+            PropertyRow("ImportOrder", counter.importOrder)
+            PropertyRow("К трансф", counter.K.toInt())
             PropertyRow("Примечание", counter.comment)
-            PropertyRow("Расход", counter.prevReading.consumption.noTrailingZero())
+            PropertyRow("Расход", counter.prevReading.consumption.toInt())
             PropertyRow("Пред. показ.", counter.prevReading.reading.noTrailingZero())
             PropertyRow("Наст. показ.") {
                 CurrentReadingCell(counter = counter, onClick = onCurrentReadingClick)
