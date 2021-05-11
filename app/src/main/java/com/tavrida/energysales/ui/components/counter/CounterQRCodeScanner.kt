@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun CounterQRCodeScanner(onDismiss: () -> Unit, onCounterSerialNumberReady: (Int) -> Unit) {
+fun CounterQRCodeScanner(onDismiss: () -> Unit, onCounterSerialNumberReady: (String) -> Unit) {
     var counterBarcodeInfo by remember {
         mutableStateOf(null as SnBarcodeImage?)
     }
@@ -102,7 +102,7 @@ fun RawCodes(allCodes: List<String>) {
 @Composable
 private fun SnBarcodePreviewStage(
     info: SnBarcodeImage,
-    onCounterSerialNumberReady: (Int) -> Unit,
+    onCounterSerialNumberReady: (String) -> Unit,
     delay: Long = 2000
 ) {
     Image(
@@ -119,7 +119,7 @@ private fun SnBarcodePreviewStage(
     }
 }
 
-private data class SnBarcodeImage(val serialNumber: Int, val barcode: Barcode, val image: Bitmap)
+private data class SnBarcodeImage(val serialNumber: String, val barcode: Barcode, val image: Bitmap)
 
 private fun findCounterInfo(barcodes: List<Barcode>, image: Bitmap): SnBarcodeImage? {
     val allCodes = sequence {
@@ -155,10 +155,12 @@ private fun Barcode.draw(image: Bitmap): Bitmap {
     return image
 }
 
-private fun Barcode.tryParseCounterSN(): Int? {
+private fun Barcode.tryParseCounterSN(): String? {
     val value = rawValue ?: return null
     if (value.startsWith(COUNTER_CODE_PREFIX)) {
-        return value.substring(COUNTER_CODE_PREFIX.length).toIntOrNull()
+        val sn = value.substring(COUNTER_CODE_PREFIX.length)
+        sn.toIntOrNull() ?: return null
+        return sn
     } else {
         return null
     }

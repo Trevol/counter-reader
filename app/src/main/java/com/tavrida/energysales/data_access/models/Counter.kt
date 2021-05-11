@@ -6,12 +6,13 @@ import java.time.LocalDateTime
 
 data class Counter(
     val id: Int,
-    val serialNumber: Int,
+    val serialNumber: String,
     val consumerId: Int,
     val K: Double,
     val prevReading: PrevCounterReading,
     val readings: SnapshotStateList<CounterReading>,
-    val comment: String? = null
+    val comment: String? = null,
+    val importOrder: Int
 ) {
     val currentReading: CounterReading?
         get() {

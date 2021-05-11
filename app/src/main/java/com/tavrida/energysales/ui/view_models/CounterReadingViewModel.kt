@@ -62,9 +62,9 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         }
     }
 
-    fun activateCounterBySerialNumber(sn: Int): Boolean {
+    fun activateCounterBySerialNumber(sn: String): Boolean {
         clearSelection()
-        if (sn <= 0) {
+        if (sn.isEmpty()) {
             return false
         }
 
@@ -112,7 +112,7 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
             val counter: Counter
         )
 
-        private fun List<Consumer>.findBySn(sn: Int): IndexedConsumerWithCounter? {
+        private fun List<Consumer>.findBySn(sn: String): IndexedConsumerWithCounter? {
             forEachIndexed { consumerIndex, consumer ->
                 val counter = consumer.counters.firstOrNull { it.serialNumber == sn }
                 if (counter != null) {

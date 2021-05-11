@@ -22,7 +22,6 @@ import kotlin.system.measureTimeMillis
 class ExampleInstrumentedTest {
     @Test
     fun generateData() {
-
         val dc = DbInstance(appContext().filesDir, "ENERGY_SALES_MOBILE", allTables.toList())
             .get(recreate = true)
             .let { DataContext(it) }
@@ -59,7 +58,7 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
     fun readings(
         consumerPos: Int,
         counterPos: Int,
-        serialNumber: Int,
+        serialNumber: String,
         K: Double
     ): Pair<List<CounterReading>, PrevCounterReading> {
         val monthAgo = LocalDateTime.now().minusMonths(1)
@@ -94,12 +93,14 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
         return readings to prevReading
     }
 
+    var counterImportPos = 0
+
     val maxLen = nOfConsumers.toString().length
     return (1..nOfConsumers).map { consumerPos ->
         val consumerName = "Потребитель_${consumerPos.padStartEx(maxLen, '0')}"
         val oneOrTwo = if (consumerPos % 2 == 1) (1..1) else (1..2)
         val counters = oneOrTwo.map { counterPos ->
-            val serialNumber = "${consumerPos}0$counterPos".toInt()
+            val serialNumber = "${consumerPos}0$counterPos"
             val K = if (counterPos % 2 == 0) 1.0 else 50.0
             val (readings, prevReading) = readings(consumerPos, counterPos, serialNumber, K)
             Counter(
@@ -109,7 +110,8 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
                 K = K,
                 prevReading = prevReading,
                 readings = readings.toMutableStateList(),
-                comment = "Счетчик $serialNumber потребителя $consumerName!!"
+                comment = "Счетчик $serialNumber потребителя $consumerName!!",
+                importOrder = ++counterImportPos
             )
 
         }
@@ -118,7 +120,8 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
             id = -1,
             name = consumerName,
             comment = "this is consumer №$consumerPos",
-            counters = counters
+            counters = counters.toMutableList(),
+            importOrder = consumerPos
         )
     }
 }

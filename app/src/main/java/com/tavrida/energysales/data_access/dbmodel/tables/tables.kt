@@ -9,13 +9,15 @@ import org.jetbrains.exposed.sql.`java-time`.timestamp
 object ConsumersTable : IntIdTable("PUBLIC.CONSUMER") {
     val name = varchar("name", 256).uniqueIndex()
     val comment = varchar("comment", 2000).nullable()
+    val importOrder = integer("import_order").uniqueIndex()
 }
 
 object CountersTable : IntIdTable("PUBLIC.COUNTER") {
-    val serialNumber = integer("serial_number").uniqueIndex()
+    val serialNumber = varchar("serial_number", 20).uniqueIndex()
     val consumerId = reference("consumer_id", ConsumersTable.id)
     val K = double("K")
     val comment = varchar("comment", 2000).nullable()
+    val importOrder = integer("import_order").uniqueIndex()
 }
 
 object PrevCounterReadingsTable : IntIdTable("PUBLIC.PREV_COUNTER_READING") {

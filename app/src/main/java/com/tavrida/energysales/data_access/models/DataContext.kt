@@ -24,6 +24,7 @@ class DataContext(val db: Database) : IDataContext {
                 val consId = ConsumersTable.insertAndGetId {
                     it[name] = consumer.name
                     it[comment] = consumer.comment
+                    it[importOrder] = consumer.importOrder
                 }.value
 
                 for (counter in consumer.counters) {
@@ -32,6 +33,7 @@ class DataContext(val db: Database) : IDataContext {
                         it[consumerId] = consId
                         it[K] = counter.K
                         it[comment] = counter.comment
+                        it[importOrder] = counter.importOrder
                     }.value
 
                     for (reading in counter.readings) {
@@ -138,7 +140,8 @@ class DataContext(val db: Database) : IDataContext {
                 K = it[t.K],
                 prevReading = prevReadingByCounterId[counterId]!!,
                 readings = readings.filter { it.counterId == counterId }.toMutableStateList(),
-                comment = it[t.comment]
+                comment = it[t.comment],
+                importOrder = it[t.importOrder]
             )
         }
 
@@ -148,8 +151,9 @@ class DataContext(val db: Database) : IDataContext {
             Consumer(
                 id = consumerId,
                 name = it[t.name],
-                counters = counters.filter { it.consumerId == consumerId },
-                comment = it[t.comment]
+                counters = counters.filter { it.consumerId == consumerId }.toMutableList(),
+                comment = it[t.comment],
+                importOrder = it[t.importOrder]
             )
         }
     }
