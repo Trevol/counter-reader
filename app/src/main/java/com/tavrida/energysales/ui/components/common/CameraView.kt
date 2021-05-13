@@ -7,15 +7,14 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.tavrida.utils.rememberMutableStateOf
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -36,6 +35,9 @@ fun CameraView(
         cameraProviderFuture.get()
     }
 
+    var camera by rememberMutableStateOf(null as Camera?)
+    var torchActivated by rememberMutableStateOf(false)
+
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
@@ -44,7 +46,7 @@ fun CameraView(
 
             cameraProviderFuture.addListener({
                 // val cameraProvider = cameraProviderFuture.get()
-                bindCameraUseCases(
+                camera = bindCameraUseCases(
                     cameraProvider,
                     cameraSelector,
                     lifecycleOwner,
@@ -52,13 +54,18 @@ fun CameraView(
                     previewView,
                     imageAnalyzer
                 )
+                if (torchActivated) {
+                    camera?.cameraControl?.enableTorch(true)
+                }
             }, mainExecutor)
 
             previewView
         }
     )
+
     DisposableEffect(key1 = Unit) {
         onDispose {
+            camera?.cameraControl?.enableTorch(false)
             cameraProvider.unbindAll()
         }
     }
@@ -71,7 +78,7 @@ private fun bindCameraUseCases(
     analyzerExecutor: Executor,
     previewView: PreviewView,
     imageAnalyzer: ImageAnalysis.Analyzer?
-) {
+): Camera {
     val preview = Preview.Builder().build()
         .also {
             it.setSurfaceProvider(previewView.surfaceProvider)
@@ -85,7 +92,7 @@ private fun bindCameraUseCases(
 
 
     cameraProvider.unbindAll()
-    cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, *useCases)
+    return cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, *useCases)
 }
 
 fun setupImageAnalysis(analyzer: ImageAnalysis.Analyzer, executor: Executor): ImageAnalysis {
