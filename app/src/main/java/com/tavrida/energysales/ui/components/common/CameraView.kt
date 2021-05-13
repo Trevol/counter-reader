@@ -6,11 +6,24 @@ import android.view.ViewGroup
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FlashlightOff
+import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -62,11 +75,41 @@ fun CameraView(
             previewView
         }
     )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.End
+    ) {
+        TorchControl(
+            modifier = Modifier.padding(5.dp),
+            activated = torchActivated,
+            onClick = {
+                torchActivated = !torchActivated
+                camera?.cameraControl?.enableTorch(torchActivated)
+
+            }
+        )
+    }
 
     DisposableEffect(key1 = Unit) {
         onDispose {
             camera?.cameraControl?.enableTorch(false)
             cameraProvider.unbindAll()
+        }
+    }
+}
+
+@Composable
+fun TorchControl(modifier: Modifier = Modifier, activated: Boolean, onClick: () -> Unit) {
+    FloatingActionButton(modifier = modifier, onClick = onClick) {
+        if (activated) {
+            Icon(
+                imageVector = Icons.Filled.FlashlightOn,
+                contentDescription = null,
+                tint = Color.Green
+            )
+        } else {
+            Icon(imageVector = Icons.Filled.FlashlightOff, contentDescription = null)
         }
     }
 }
