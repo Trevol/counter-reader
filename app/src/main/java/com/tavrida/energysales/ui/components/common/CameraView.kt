@@ -58,7 +58,6 @@ fun CameraView(
             val mainExecutor = ContextCompat.getMainExecutor(context)
 
             cameraProviderFuture.addListener({
-                // val cameraProvider = cameraProviderFuture.get()
                 camera = bindCameraUseCases(
                     cameraProvider,
                     cameraSelector,
