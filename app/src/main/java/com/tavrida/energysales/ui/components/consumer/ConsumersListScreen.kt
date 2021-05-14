@@ -1,11 +1,11 @@
 package com.tavrida.energysales.ui.components.consumer
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.PhotoCamera
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
@@ -16,14 +16,21 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConsumersListScreen(
     viewModel: CounterReadingViewModel,
+    searchFieldVisible: Boolean,
     onCounterScannerRequest: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            ConsumerCounterSearch("", { query -> viewModel.searchCustomers(query) })
-        },
-        floatingActionButton = {
-            ScanByCameraButton(onClick = onCounterScannerRequest)
+            if (searchFieldVisible) {
+                ConsumerCounterSearchAndScanByCamera(
+                    initialQuery = viewModel.searchQuery,
+                    onQueryChange = { query ->
+                        viewModel.searchQuery = query
+                        viewModel.searchCustomers()
+                    },
+                    onCounterScannerRequest = onCounterScannerRequest
+                )
+            }
         }
     ) {
         ConsumersList(
@@ -34,21 +41,12 @@ fun ConsumersListScreen(
     }
 }
 
-
 @Composable
-private fun ScanByCameraButton(onClick: () -> Unit) {
-    FloatingActionButton(
-        onClick = onClick
-    ) {
-        Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
-    }
-}
-
-@Composable
-private fun ConsumerCounterSearch(
+private fun ConsumerCounterSearchAndScanByCamera(
     initialQuery: String,
     onQueryChange: (String) -> Unit,
-    debounce: Long = 500
+    searchDebounce: Long = 500,
+    onCounterScannerRequest: () -> Unit
 ) {
     var searching by remember { mutableStateOf(false) }
     var localQuery by remember { mutableStateOf(initialQuery) }
@@ -63,16 +61,13 @@ private fun ConsumerCounterSearch(
             localQuery = it
             searchJob?.cancel()
             searchJob = scope.launch {
-                delay(debounce)
+                delay(searchDebounce)
                 searching = true
                 onQueryChange(localQuery)
                 searching = false
             }
         },
         leadingIcon = {
-            Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
-        },
-        trailingIcon = {
             IconButton(
                 enabled = !searching,
                 onClick = {
@@ -84,7 +79,14 @@ private fun ConsumerCounterSearch(
             ) {
                 Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
             }
-
+        },
+        trailingIcon = {
+            IconButton(
+                modifier = Modifier.background(MaterialTheme.colors.secondary),
+                onClick = onCounterScannerRequest
+            ) {
+                Icon(imageVector = Icons.Outlined.PhotoCamera, contentDescription = null)
+            }
         }
     )
 }

@@ -26,6 +26,7 @@ class ConsumerDetailsState(val consumer: IndexedConsumer, showDetails: Boolean) 
 
 class CounterReadingViewModel(val dataContext: IDataContext) {
     var busy by mutableStateOf(false)
+    var searchQuery by mutableStateOf("")
 
     protected var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
@@ -33,7 +34,7 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         busy = true
         try {
             allConsumers = dataContext.loadAll()
-            searchCustomers("")
+            searchCustomers()
         } finally {
             busy = false
         }
@@ -48,15 +49,22 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         selectedConsumer = null
     }
 
-    fun searchCustomers(query: String) {
-        clearSelection()
-        if (query == "")
+    fun searchCustomers() {
+        if (searchQuery == "") {
             visibleConsumers = allConsumers
-        else {
+            if (selectedConsumer != null) //preserve selection on clearing filter
+            {
+                val consumer = selectedConsumer!!.consumer.consumer
+                val indexedConsumer = IndexedConsumer(consumer, visibleConsumers.indexOf(consumer))
+                selectedConsumer = ConsumerDetailsState(indexedConsumer, showDetails = false)
+            }
+        } else {
+            clearSelection()
             visibleConsumers = allConsumers.filter {
-                it.name.contains(query, ignoreCase = true) ||
+                it.name.contains(searchQuery, ignoreCase = true) ||
                         it.counters.any {
-                            it.serialNumber.toString().contains(query, ignoreCase = true)
+                            it.serialNumber.contains(searchQuery, ignoreCase = true) ||
+                                    it.comment?.contains(searchQuery, ignoreCase = true) == true
                         }
             }
         }
@@ -67,7 +75,8 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         if (sn.isEmpty()) {
             return false
         }
-
+        searchQuery = ""
+        searchCustomers()
         val found = allConsumers.findBySn(sn) ?: return false
 
         selectedConsumer = ConsumerDetailsState(found.consumer, showDetails = true)

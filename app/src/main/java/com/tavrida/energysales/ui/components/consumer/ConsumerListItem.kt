@@ -32,10 +32,10 @@ fun ConsumerListItem(
     ) {
         Column(modifier = Modifier.padding(10.dp, 10.dp)) {
             Text(
-                text = consumer.name,
+                text = "${consumer.importOrder}. ${consumer.name}",
                 fontSize = 24.sp
             )
-            ShortCountersList(consumer)
+            CountersList(consumer)
         }
 
         if (consumer.allCountersHaveRead()) {
@@ -45,8 +45,11 @@ fun ConsumerListItem(
 }
 
 @Composable
-private inline fun ShortCountersList(consumer: Consumer) {
-    Text(text = "Счетчики: ${consumer.countersInfo}")
+private inline fun CountersList(consumer: Consumer) {
+    for(counter in consumer.counters){
+        Text(text = "${counter.serialNumber}(${counter.importOrder}). ${counter.comment.orEmpty()}")
+    }
+
 }
 
 @Composable

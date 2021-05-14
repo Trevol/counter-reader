@@ -17,10 +17,15 @@ import java.time.LocalDateTime
 fun App(viewModel: CounterReadingViewModel) {
     val context = LocalContext.current
     var scanByCamera by remember { mutableStateOf(false) }
-
-    ConsumersListScreen(viewModel, onCounterScannerRequest = { scanByCamera = true })
-
     val selectedConsumerState = viewModel.selectedConsumer
+    val showConsumerDetails = selectedConsumerState?.showDetails == true
+    val searchFieldVisible = !(scanByCamera || showConsumerDetails)
+
+    ConsumersListScreen(
+        viewModel,
+        searchFieldVisible = searchFieldVisible,
+        onCounterScannerRequest = { scanByCamera = true })
+
     if (selectedConsumerState?.showDetails == true) {
         ConsumerDetailsScreen(
             consumerDetailsState = selectedConsumerState,
@@ -28,7 +33,13 @@ fun App(viewModel: CounterReadingViewModel) {
                 selectedConsumerState.selectedCounter = null
                 selectedConsumerState.showDetails = false
             },
-            onNewReading = { counter, newReading -> viewModel.applyNewReading(counter, newReading) }
+            onNewReading = { counter, newReading ->
+                viewModel.applyNewReading(
+                    counter,
+                    newReading
+                )
+            },
+            onCounterScannerRequest = { scanByCamera = true }
         )
     }
 
