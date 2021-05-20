@@ -60,9 +60,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_version"]}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha07")
-    implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha06")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha08")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha01")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07")
 
     // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
     // implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
