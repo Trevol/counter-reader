@@ -34,7 +34,8 @@ import java.util.concurrent.Executors
 @Composable
 fun CameraView(
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
-    imageAnalyzer: ImageAnalysis.Analyzer?
+    imageAnalyzer: ImageAnalysis.Analyzer?,
+    analysisTargetResolution: Size?
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = LocalContext.current.let {
@@ -64,7 +65,8 @@ fun CameraView(
                     lifecycleOwner,
                     analyzerExecutor,
                     previewView,
-                    imageAnalyzer
+                    imageAnalyzer,
+                    analysisTargetResolution
                 )
                 if (torchActivated) {
                     camera?.cameraControl?.enableTorch(true)
@@ -99,7 +101,7 @@ fun CameraView(
 }
 
 @Composable
-fun TorchControl(modifier: Modifier = Modifier, activated: Boolean, onClick: () -> Unit) {
+private fun TorchControl(modifier: Modifier = Modifier, activated: Boolean, onClick: () -> Unit) {
     FloatingActionButton(modifier = modifier, onClick = onClick) {
         if (activated) {
             Icon(
@@ -119,7 +121,8 @@ private fun bindCameraUseCases(
     lifecycleOwner: LifecycleOwner,
     analyzerExecutor: Executor,
     previewView: PreviewView,
-    imageAnalyzer: ImageAnalysis.Analyzer?
+    imageAnalyzer: ImageAnalysis.Analyzer?,
+    analysisTargetResolution: Size?
 ): Camera {
     val preview = Preview.Builder().build()
         .also {
@@ -127,7 +130,7 @@ private fun bindCameraUseCases(
         }
 
     val useCases = if (imageAnalyzer != null) {
-        arrayOf(preview, setupImageAnalysis(imageAnalyzer, analyzerExecutor))
+        arrayOf(preview, setupImageAnalysis(imageAnalyzer, analysisTargetResolution, analyzerExecutor))
     } else {
         arrayOf(preview)
     }
@@ -137,9 +140,13 @@ private fun bindCameraUseCases(
     return cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, *useCases)
 }
 
-fun setupImageAnalysis(analyzer: ImageAnalysis.Analyzer, executor: Executor): ImageAnalysis {
+fun setupImageAnalysis(analyzer: ImageAnalysis.Analyzer, targetResolution: Size?, executor: Executor): ImageAnalysis {
     return ImageAnalysis.Builder()
-        .setTargetResolution(Size(480, 640))
+        .apply {
+            if (targetResolution != null){
+                setTargetResolution(targetResolution)
+            }
+        }
         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
         .build()
         .apply {

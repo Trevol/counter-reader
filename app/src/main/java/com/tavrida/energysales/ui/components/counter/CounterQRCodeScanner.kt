@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Rect
+import android.util.Size
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.mlkit.vision.barcode.Barcode
 import com.tavrida.energysales.ui.components.common.CameraView
+import com.tavrida.energysales.ui.components.common.FixedOrientation
 import com.tavrida.energysales.ui.components.common.OrientationSelector
 import com.tavrida.utils.rememberMutableStateOf
 import com.tavrida.utils.suppressedClickable
@@ -59,12 +61,10 @@ private fun CounterQRScanningStage(
     var allCodes by rememberMutableStateOf(listOf<String>())
     val scope = rememberCoroutineScope()
     var allCodesJob by rememberMutableStateOf(null as Job?)
+    val context = LocalContext.current
 
-
-    BackHandler(onBack = onDismiss)
-    OrientationSelector {
-        //react to device orientation change by recreating camera stuff
-        val imageAnalyzer = QRAnalyzer(LocalContext.current) { barcodes, image ->
+    val imageAnalyzer = remember {
+        QRAnalyzer(context) { barcodes, image ->
             allCodes = barcodes.sortedBy { it.boundingBox?.exactCenterY() }
                 .mapNotNull { it.rawValue }
             allCodesJob?.cancel()
@@ -72,13 +72,18 @@ private fun CounterQRScanningStage(
 
             onCounterInfo(findCounterInfo(barcodes, image))
         }
-        CameraView(imageAnalyzer = imageAnalyzer)
-    }
-    FloatingActionButton(onClick = onDismiss, modifier = Modifier.padding(4.dp)) {
-        Icon(Icons.Outlined.ArrowBack, "Назад")
     }
 
-    RawCodes(allCodes)
+    FixedOrientation {
+        BackHandler(onBack = onDismiss)
+        CameraView(imageAnalyzer = imageAnalyzer, analysisTargetResolution = Size(480, 640))
+
+        FloatingActionButton(onClick = onDismiss, modifier = Modifier.padding(4.dp)) {
+            Icon(Icons.Outlined.ArrowBack, "Назад")
+        }
+
+        RawCodes(allCodes)
+    }
 }
 
 @Composable
