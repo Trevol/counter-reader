@@ -16,7 +16,7 @@
         android:theme="@style/Theme.CounterReader">
         <activity
             android:name="com.tavrida.energysales.MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.CounterReader.NoActionBar">
