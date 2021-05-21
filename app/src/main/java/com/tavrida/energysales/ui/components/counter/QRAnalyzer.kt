@@ -23,7 +23,6 @@ class QRAnalyzer(
     private var frameCounter = 0
 
     override fun analyze(image: ImageProxy) {
-        "${image.width}x${image.height}".printlnStamped()
         frameCounter++
         if (frameCounter % scanEveryNthFrame != 0) {
             image.close()
