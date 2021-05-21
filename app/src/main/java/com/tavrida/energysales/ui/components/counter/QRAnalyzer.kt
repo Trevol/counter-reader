@@ -10,6 +10,8 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.tavrida.utils.CameraImageConverter
+import com.tavrida.utils.println
+import com.tavrida.utils.printlnStamped
 
 class QRAnalyzer(
     context: Context,
@@ -21,6 +23,7 @@ class QRAnalyzer(
     private var frameCounter = 0
 
     override fun analyze(image: ImageProxy) {
+        "${image.width}x${image.height}".printlnStamped()
         frameCounter++
         if (frameCounter % scanEveryNthFrame != 0) {
             image.close()

@@ -29,6 +29,7 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.tavrida.energysales.ui.components.common.CameraView
 import com.tavrida.energysales.ui.components.common.FixedOrientation
 import com.tavrida.energysales.ui.components.common.OrientationSelector
+import com.tavrida.utils.Orientation
 import com.tavrida.utils.rememberMutableStateOf
 import com.tavrida.utils.suppressedClickable
 import kotlinx.coroutines.Job
@@ -74,9 +75,12 @@ private fun CounterQRScanningStage(
         }
     }
 
-    FixedOrientation {
+    FixedOrientation { orientation ->
         BackHandler(onBack = onDismiss)
-        CameraView(imageAnalyzer = imageAnalyzer, analysisTargetResolution = Size(480, 640))
+        CameraView(
+            imageAnalyzer = imageAnalyzer,
+            analysisTargetResolution = targetResolution(orientation)
+        )
 
         FloatingActionButton(onClick = onDismiss, modifier = Modifier.padding(4.dp)) {
             Icon(Icons.Outlined.ArrowBack, "Назад")
@@ -84,6 +88,11 @@ private fun CounterQRScanningStage(
 
         RawCodes(allCodes)
     }
+}
+
+private fun targetResolution(orientation: Orientation) = when (orientation) {
+    Orientation.PORTRAIT -> Size(600, 800)
+    Orientation.LANDSCAPE -> Size(800, 600)
 }
 
 @Composable
