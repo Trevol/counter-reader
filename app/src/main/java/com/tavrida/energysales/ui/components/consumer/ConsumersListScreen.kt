@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
+import com.tavrida.energysales.ui.view_models.SearchState
 import com.tavrida.utils.confirm
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,9 +25,8 @@ fun ConsumersListScreen(
 ) {
     val activity = LocalContext.current as Activity
     BackHandler {
-        if (viewModel.searchQuery.isNotEmpty()) {
-            viewModel.searchQuery = ""
-            viewModel.searchCustomers()
+        if (viewModel.search.query.isNotEmpty()) {
+            viewModel.search.setQuery("", true)
         } else {
             confirm(activity, "Выйти?") {
                 activity.finish()
@@ -36,13 +36,7 @@ fun ConsumersListScreen(
     Scaffold(
         topBar = {
             if (searchFieldVisible) {
-                ConsumerCounterSearch(
-                    initialQuery = viewModel.searchQuery,
-                    onQueryChange = { query ->
-                        viewModel.searchQuery = query
-                        viewModel.searchCustomers()
-                    }
-                )
+                ConsumerCounterSearch(viewModel.search)
             }
         },
         floatingActionButton = {
@@ -55,6 +49,30 @@ fun ConsumersListScreen(
             onClick = { viewModel.selectConsumer(it, showDetails = true) }
         )
     }
+}
+
+@Composable
+private fun ConsumerCounterSearch(
+    searchState: SearchState
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        enabled = !searchState.searching,
+        value = searchState.query,
+        onValueChange = {
+            searchState.setQuery(it)
+        },
+        leadingIcon = {
+            IconButton(
+                enabled = !searchState.searching,
+                onClick = {
+                    searchState.setQuery("", true)
+                }
+            ) {
+                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
+            }
+        }
+    )
 }
 
 @Composable

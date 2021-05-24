@@ -5,9 +5,9 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.time.LocalDateTime
+import kotlin.coroutines.EmptyCoroutineContext
 
 data class IndexedConsumer(val consumer: Consumer, val index: Int)
 
@@ -24,19 +24,48 @@ class ConsumerDetailsState(val consumer: IndexedConsumer, showDetails: Boolean) 
     }
 }
 
-class CounterReadingViewModel(val dataContext: IDataContext) {
-    var busy by mutableStateOf(false)
-    var searchQuery by mutableStateOf("")
+class SearchState(private val scope: CoroutineScope, val searchAction: () -> Unit) {
+    var query by mutableStateOf("")
+        private set
 
-    protected var allConsumers = listOf<Consumer>()
+    @JvmName("setQuery2")
+    fun setQuery(value: String, immediateAction: Boolean = false) {
+        query = value
+        deferSearchAction?.cancel()
+        if (immediateAction) {
+            searchAction()
+        } else {
+            deferSearchAction = scope.launch {
+                delay(searchDebounce)
+                searching = true
+                searchAction()
+                searching = false
+            }
+        }
+    }
+
+    var searching by mutableStateOf(false)
+        private set
+
+    //for debouncing value stream (from keyboard)
+    private val searchDebounce: Long = 500
+    private var deferSearchAction = null as Job?
+}
+
+class CounterReadingViewModel(private val dataContext: IDataContext) {
+    private val scope = CoroutineScope(EmptyCoroutineContext)
+    var busy by mutableStateOf(false)
+    val search = SearchState(scope) {
+        busy {
+            searchConsumers()
+        }
+    }
+    private var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
-    fun loadData() {
-        busy = true
-        try {
+    suspend fun loadData() {
+        busy {
             allConsumers = dataContext.loadAll()
-            searchCustomers()
-        } finally {
-            busy = false
+            searchConsumers()
         }
     }
 
@@ -45,12 +74,13 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         selectedConsumer = ConsumerDetailsState(consumer, showDetails = showDetails)
     }
 
-    fun clearSelection() {
+    private fun clearSelection() {
         selectedConsumer = null
     }
 
-    fun searchCustomers() {
-        if (searchQuery == "") {
+    private fun searchConsumers() {
+        val query = search.query
+        if (query.isEmpty()) {
             visibleConsumers = allConsumers
             if (selectedConsumer != null) //preserve selection on clearing filter
             {
@@ -60,13 +90,7 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
             }
         } else {
             clearSelection()
-            visibleConsumers = allConsumers.filter {
-                it.name.contains(searchQuery, ignoreCase = true) ||
-                        it.counters.any {
-                            it.serialNumber.contains(searchQuery, ignoreCase = true) ||
-                                    it.comment?.contains(searchQuery, ignoreCase = true) == true
-                        }
-            }
+            visibleConsumers = allConsumers.filter(query)
         }
     }
 
@@ -75,8 +99,7 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         if (sn.isEmpty()) {
             return false
         }
-        searchQuery = ""
-        searchCustomers()
+        search.setQuery("", immediateAction = true)
         val found = allConsumers.findBySn(sn) ?: return false
 
         selectedConsumer = ConsumerDetailsState(found.consumer, showDetails = true)
@@ -104,9 +127,9 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
         }
     }
 
-    private fun busy(block: () -> Unit) {
+    private fun busy(block: suspend () -> Unit) {
         busy = true
-        GlobalScope.launch {
+        scope.launch {
             try {
                 block()
             } finally {
@@ -133,6 +156,15 @@ class CounterReadingViewModel(val dataContext: IDataContext) {
             }
             return null
         }
+
+        private fun List<Consumer>.filter(query: String) = filter {
+            it.name.contains(query, ignoreCase = true) ||
+                    it.counters.any {
+                        it.serialNumber.contains(query, ignoreCase = true) ||
+                                it.comment?.contains(query, ignoreCase = true) == true
+                    }
+        }
+
     }
 }
 
