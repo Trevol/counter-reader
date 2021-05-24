@@ -1,13 +1,17 @@
 package com.tavrida.energysales.ui.components.consumer
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
+import com.tavrida.utils.confirm
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,6 +22,17 @@ fun ConsumersListScreen(
     searchFieldVisible: Boolean,
     onCounterScannerRequest: () -> Unit
 ) {
+    val activity = LocalContext.current as Activity
+    BackHandler {
+        if (viewModel.searchQuery.isNotEmpty()) {
+            viewModel.searchQuery = ""
+            viewModel.searchCustomers()
+        } else {
+            confirm(activity, "Выйти?") {
+                activity.finish()
+            }
+        }
+    }
     Scaffold(
         topBar = {
             if (searchFieldVisible) {
