@@ -11,6 +11,7 @@ import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
 import com.tavrida.energysales.ui.components.counter.CounterQRCodeScanner
 import com.tavrida.energysales.ui.components.counter.CounterScanner
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
+import com.tavrida.utils.printlnStamped
 import java.time.LocalDateTime
 
 @Composable

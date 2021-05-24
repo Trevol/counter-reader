@@ -5,6 +5,7 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
+import com.tavrida.utils.printlnStamped
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import kotlin.coroutines.EmptyCoroutineContext
@@ -56,9 +57,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
     private val scope = CoroutineScope(EmptyCoroutineContext)
     var busy by mutableStateOf(false)
     val search = SearchState(scope) {
-        busy {
-            searchConsumers()
-        }
+        searchConsumers()
     }
     private var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
