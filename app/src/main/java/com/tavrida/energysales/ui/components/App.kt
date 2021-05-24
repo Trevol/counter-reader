@@ -19,6 +19,7 @@ fun App(viewModel: CounterReadingViewModel) {
     var scanByCamera by remember { mutableStateOf(false) }
     val selectedConsumerState = viewModel.selectedConsumer
     val showConsumerDetails = selectedConsumerState?.showDetails == true
+    //hide search text field - because we need hide keyboard
     val searchFieldVisible = !(scanByCamera || showConsumerDetails)
 
     ConsumersListScreen(
@@ -54,16 +55,6 @@ fun App(viewModel: CounterReadingViewModel) {
                 }
             }
         )
-        /*CounterScanner(
-            onCounterSerialNumberReady = { sn ->
-                scanByCamera = false
-                val found = viewModel.activateCounterBySerialNumber(sn)
-                if (!found) {
-                    Toast.makeText(context, "Счетчик №($sn) не найден!", Toast.LENGTH_SHORT).show()
-                }
-            },
-            onDismiss = { scanByCamera = false }
-        )*/
     }
 
     CircularBusyIndicator(viewModel.busy)

@@ -1,15 +1,12 @@
 package com.tavrida.energysales.ui.components.consumer
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,15 +21,17 @@ fun ConsumersListScreen(
     Scaffold(
         topBar = {
             if (searchFieldVisible) {
-                ConsumerCounterSearchAndScanByCamera(
+                ConsumerCounterSearch(
                     initialQuery = viewModel.searchQuery,
                     onQueryChange = { query ->
                         viewModel.searchQuery = query
                         viewModel.searchCustomers()
-                    },
-                    onCounterScannerRequest = onCounterScannerRequest
+                    }
                 )
             }
+        },
+        floatingActionButton = {
+            ScanByCameraFloatingButton(onCounterScannerRequest)
         }
     ) {
         ConsumersList(
@@ -44,60 +43,17 @@ fun ConsumersListScreen(
 }
 
 @Composable
-private fun ConsumerCounterSearchAndScanByCamera(
+private fun ConsumerCounterSearch(
     initialQuery: String,
     onQueryChange: (String) -> Unit,
-    searchDebounce: Long = 500,
-    onCounterScannerRequest: () -> Unit
+    searchDebounce: Long = 500
 ) {
     var searching by remember { mutableStateOf(false) }
     var localQuery by remember { mutableStateOf(initialQuery) }
     val scope = rememberCoroutineScope()
     var searchJob by remember { mutableStateOf<Job?>(null) }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(
-            modifier = Modifier.weight(1f),
-            enabled = !searching,
-            value = localQuery,
-            onValueChange = {
-                localQuery = it
-                searchJob?.cancel()
-                searchJob = scope.launch {
-                    delay(searchDebounce)
-                    searching = true
-                    onQueryChange(localQuery)
-                    searching = false
-                }
-            },
-            leadingIcon = {
-                IconButton(
-                    enabled = !searching,
-                    onClick = {
-                        localQuery = ""
-                        searching = true
-                        onQueryChange(localQuery)
-                        searching = false
-                    }
-                ) {
-                    Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
-                }
-            }
-        )
-        IconButton(
-            modifier = Modifier
-                .padding(4.dp)
-                .background(MaterialTheme.colors.secondary),
-            onClick = onCounterScannerRequest
-        ) {
-            Icon(imageVector = Icons.Outlined.PhotoCamera, contentDescription = null)
-        }
-    }
-
-    /*OutlinedTextField(
+    OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         enabled = !searching,
         value = localQuery,
@@ -123,14 +79,6 @@ private fun ConsumerCounterSearchAndScanByCamera(
             ) {
                 Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
             }
-        },
-        trailingIcon = {
-            IconButton(
-                modifier = Modifier.background(MaterialTheme.colors.secondary),
-                onClick = onCounterScannerRequest
-            ) {
-                Icon(imageVector = Icons.Outlined.PhotoCamera, contentDescription = null)
-            }
         }
-    )*/
+    )
 }

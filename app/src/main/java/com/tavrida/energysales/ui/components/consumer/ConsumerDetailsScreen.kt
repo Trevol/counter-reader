@@ -1,19 +1,16 @@
 package com.tavrida.energysales.ui.components.consumer
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.ui.components.common.BackButton
+import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.components.counter.CountersItems
 import com.tavrida.energysales.ui.components.counter.EnterReadingDialog
 import com.tavrida.energysales.ui.view_models.ConsumerDetailsState
@@ -32,7 +29,10 @@ fun ConsumerDetailsScreen(
             .fillMaxSize()
             .suppressedClickable(),
         topBar = {
-            TopBar(onBack = onClose, onCounterScannerRequest = onCounterScannerRequest)
+            BackButton(onClose)
+        },
+        floatingActionButton = {
+            ScanByCameraFloatingButton(onCounterScannerRequest)
         }
     ) {
         Column(
@@ -65,21 +65,5 @@ fun ConsumerDetailsScreen(
                 selectedCounter.showReadingEditor = false
             }
         )
-    }
-}
-
-@Composable
-private fun TopBar(onBack: () -> Unit, onCounterScannerRequest: () -> Unit) {
-    //TODO: use ConstraintLayout
-    Row(modifier = Modifier.fillMaxWidth()) {
-        BackButton(onClick = onBack)
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            IconButton(
-                modifier = Modifier.background(MaterialTheme.colors.secondary),
-                onClick = onCounterScannerRequest
-            ) {
-                Icon(imageVector = Icons.Outlined.PhotoCamera, contentDescription = null)
-            }
-        }
     }
 }
