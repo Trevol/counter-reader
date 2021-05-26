@@ -40,8 +40,11 @@ class DataContext(val db: Database) : IDataContext {
                         CounterReadingsTable.insert {
                             it[this.counterId] = counterId
                             it[this.reading] = reading.reading
-                            it[readTime] = reading.readTime
+                            it[readingTime] = reading.readingTime
                             it[comment] = reading.comment
+                            it[synchronized] = reading.synchronized
+                            it[syncTime] = reading.syncTime
+                            it[serverId] = reading.serverId
                         }
                     }
 
@@ -77,8 +80,11 @@ class DataContext(val db: Database) : IDataContext {
         transaction(db) {
             CounterReadingsTable.update({ CounterReadingsTable.id eq reading.id }) {
                 it[this.reading] = reading.reading
-                it[readTime] = reading.readTime
+                it[readingTime] = reading.readingTime
                 it[comment] = reading.comment
+                it[synchronized] = reading.synchronized
+                it[syncTime] = reading.syncTime
+                it[serverId] = reading.serverId
             }
         }
     }
@@ -88,8 +94,11 @@ class DataContext(val db: Database) : IDataContext {
             val id = CounterReadingsTable.insertAndGetId {
                 it[counterId] = newReading.counterId
                 it[reading] = newReading.reading
-                it[readTime] = newReading.readTime
+                it[readingTime] = newReading.readingTime
                 it[comment] = newReading.comment
+                it[synchronized] = newReading.synchronized
+                it[syncTime] = newReading.syncTime
+                it[serverId] = newReading.serverId
             }
             newReading.id = id.value
         }
@@ -125,8 +134,11 @@ class DataContext(val db: Database) : IDataContext {
                 id = it[t.id].value,
                 counterId = it[t.counterId].value,
                 reading = it[t.reading],
-                readTime = it[t.readTime],
-                comment = it[t.comment]
+                readingTime = it[t.readingTime],
+                comment = it[t.comment],
+                synchronized = it[t.synchronized],
+                syncTime = it[t.syncTime],
+                serverId = it[t.serverId],
             )
         }
 

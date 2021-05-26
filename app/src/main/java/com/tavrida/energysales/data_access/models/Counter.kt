@@ -16,8 +16,8 @@ data class Counter(
 ) {
     val currentReading: CounterReading?
         get() {
-            val lastReading = readings.maxByOrNull { it.readTime } ?: return null
-            return if (lastReading.readTime.isCurrentMonth()) {
+            val lastReading = readings.maxByOrNull { it.readingTime } ?: return null
+            return if (lastReading.readingTime.isCurrentMonth()) {
                 lastReading
             } else {
                 null

@@ -73,14 +73,14 @@ private fun dummyData(nOfConsumers: Int): List<Consumer> {
                 id = -1,
                 counterId = -1,
                 reading = readingTwoMonthsAgo,
-                readTime = twoMonthsAgo,
+                readingTime = twoMonthsAgo,
                 comment = "Это показания $twoMonthsAgo"
             ),
             CounterReading(
                 id = -1,
                 counterId = -1,
                 reading = readingMonthAgo,
-                readTime = monthAgo,
+                readingTime = monthAgo,
                 comment = "Это показания $monthAgo"
             )
         )

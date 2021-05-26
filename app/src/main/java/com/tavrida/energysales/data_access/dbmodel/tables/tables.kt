@@ -1,10 +1,8 @@
 package com.tavrida.energysales.data_access.dbmodel.tables
 
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.`java-time`.CurrentTimestamp
 import org.jetbrains.exposed.sql.`java-time`.date
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.jetbrains.exposed.sql.`java-time`.timestamp
 
 object ConsumersTable : IntIdTable("PUBLIC.CONSUMER") {
     val name = varchar("name", 256).uniqueIndex()
@@ -32,8 +30,12 @@ object PrevCounterReadingsTable : IntIdTable("PUBLIC.PREV_COUNTER_READING") {
 object CounterReadingsTable : IntIdTable("PUBLIC.COUNTER_READING") {
     val counterId = reference("counter_id", CountersTable.id)
     val reading = double("reading")
-    val readTime = datetime("read_time").defaultExpression(CurrentTimestamp())
+    val readingTime = datetime("reading_time")
     val comment = varchar("comment", 2000).nullable()
+    val synchronized = bool("synchronized")
+    val syncTime = datetime("syncTime").nullable()
+    val serverId = integer("server_id").nullable()
 }
 
-val allTables = arrayOf(ConsumersTable, CountersTable, CounterReadingsTable, PrevCounterReadingsTable)
+val allTables =
+    arrayOf(ConsumersTable, CountersTable, CounterReadingsTable, PrevCounterReadingsTable)

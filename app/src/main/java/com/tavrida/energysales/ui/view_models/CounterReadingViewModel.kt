@@ -5,7 +5,6 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
-import com.tavrida.utils.printlnStamped
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import kotlin.coroutines.EmptyCoroutineContext
@@ -114,12 +113,21 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
             val reading = counter.currentReading
             if (reading != null) {
                 reading.reading = newReadingValue
-                reading.readTime = LocalDateTime.now()
+                reading.readingTime = LocalDateTime.now()
 
                 dataContext.updateReading(reading)
             } else {
                 val newReading =
-                    CounterReading(-1, counter.id, newReadingValue, LocalDateTime.now(), null)
+                    CounterReading(
+                        -1,
+                        counter.id,
+                        newReadingValue,
+                        LocalDateTime.now(),
+                        null,
+                        false,
+                        null,
+                        null
+                    )
                 counter.readings.add(newReading)
                 dataContext.createReading(newReading)
             }
