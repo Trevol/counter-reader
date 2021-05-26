@@ -77,7 +77,7 @@ fun ConsumersListScreen(
         },
         drawerGesturesEnabled = false,
         drawerContent = {
-            SideMenu()
+            SideMenu(onSyncWithServerClicked = { testMode -> })
         }
     ) {
         ConsumersList(
@@ -89,7 +89,7 @@ fun ConsumersListScreen(
 }
 
 @Composable
-private fun SideMenu() {
+private fun SideMenu(onSyncWithServerClicked: (testMode: Boolean) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,12 +98,22 @@ private fun SideMenu() {
 
         Row(
             modifier = Modifier
-                .clickable { }
+                .clickable { onSyncWithServerClicked(false) }
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
             Text(text = "Синхронизировать")
+        }
+
+        Row(
+            modifier = Modifier
+                .clickable { onSyncWithServerClicked(true) }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
+            Text(text = "Тест связи с сервером")
         }
     }
 }
