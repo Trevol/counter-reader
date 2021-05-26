@@ -6,6 +6,7 @@ import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.time.LocalDateTime
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -146,7 +147,9 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
     }
 
     suspend fun syncWithServer(testMode: Boolean) {
-        delay(3000)
+        withContext(Dispatchers.IO){
+            delay(3000)
+        }
     }
 
     companion object {
