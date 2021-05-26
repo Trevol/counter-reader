@@ -18,15 +18,14 @@ import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.SearchState
 import com.tavrida.utils.confirm
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun ConsumersListScreen(
     viewModel: CounterReadingViewModel,
     searchFieldVisible: Boolean,
-    onCounterScannerRequest: () -> Unit
+    onCounterScannerRequest: () -> Unit,
+    onSyncWithServerRequest: (testMode: Boolean) -> Unit
 ) {
     val activity = LocalContext.current as Activity
     val scope = rememberCoroutineScope()
@@ -77,7 +76,12 @@ fun ConsumersListScreen(
         },
         drawerGesturesEnabled = false,
         drawerContent = {
-            SideMenu(onSyncWithServerClicked = { testMode -> })
+            SideMenu(onSyncWithServerRequest = { testMode ->
+                scope.launch {
+                    scaffoldState.drawerState.close()
+                }
+                onSyncWithServerRequest(testMode)
+            })
         }
     ) {
         ConsumersList(
@@ -89,7 +93,7 @@ fun ConsumersListScreen(
 }
 
 @Composable
-private fun SideMenu(onSyncWithServerClicked: (testMode: Boolean) -> Unit) {
+private fun SideMenu(onSyncWithServerRequest: (testMode: Boolean) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,7 +102,7 @@ private fun SideMenu(onSyncWithServerClicked: (testMode: Boolean) -> Unit) {
 
         Row(
             modifier = Modifier
-                .clickable { onSyncWithServerClicked(false) }
+                .clickable { onSyncWithServerRequest(false) }
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -108,8 +112,9 @@ private fun SideMenu(onSyncWithServerClicked: (testMode: Boolean) -> Unit) {
 
         Row(
             modifier = Modifier
-                .clickable { onSyncWithServerClicked(true) }
-                .padding(16.dp),
+                .clickable { onSyncWithServerRequest(true) }
+                .padding(16.dp)
+                .padding(PaddingValues(top = 6.dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
