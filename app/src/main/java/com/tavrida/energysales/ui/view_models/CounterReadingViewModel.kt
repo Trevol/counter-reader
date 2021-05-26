@@ -145,6 +145,10 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
         }
     }
 
+    suspend fun syncWithServer(testMode: Boolean) {
+        delay(3000)
+    }
+
     companion object {
         private data class IndexedConsumerWithCounter(
             val consumer: IndexedConsumer,
