@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     //id("kotlinx-serialization")
-    //kotlin("plugin.serialization")
+    // kotlin("plugin.serialization")
 }
 
 android {
