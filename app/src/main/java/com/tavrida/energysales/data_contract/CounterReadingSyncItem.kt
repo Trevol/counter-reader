@@ -9,6 +9,6 @@ data class CounterReadingSyncItem(
     val counterId: Int,
     val reading: Double,
     val readingTime: Long,
-    val comment: String
+    val comment: String?
 )
 

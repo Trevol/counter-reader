@@ -1,13 +1,17 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
+import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
+import com.tavrida.energysales.data_contract.CounterReadingSyncItem
 import kotlinx.coroutines.*
 import java.lang.Exception
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.coroutines.EmptyCoroutineContext
 
 data class IndexedConsumer(val consumer: Consumer, val index: Int)
@@ -148,7 +152,23 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
 
     suspend fun syncWithServer(testMode: Boolean) {
         withContext(Dispatchers.IO){
-            delay(3000)
+
+            val items = listOf(
+                CounterReadingSyncItem(
+                    id = 1,
+                    user = "Саша",
+                    counterId = 1,
+                    reading = 999.0,
+                    readingTime = LocalDateTime.now().let { ZonedDateTime.of(it, ZoneId.systemDefault()) }.toInstant()
+                        .toEpochMilli(),
+                    comment = ""
+                )
+
+            )
+
+            CounterReadingSyncApiClient("192.168.0.112", 8080).use {
+                it.sync(items, testMode = true)
+            }
         }
     }
 
