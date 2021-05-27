@@ -3,6 +3,7 @@ plugins {
     id("kotlin-android")
     //id("kotlinx-serialization")
     // kotlin("plugin.serialization")
+    // id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
