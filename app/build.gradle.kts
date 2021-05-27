@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    //id("kotlinx-serialization")
+    //kotlin("plugin.serialization")
 }
 
 android {
@@ -50,10 +52,12 @@ android {
     }
 }
 
+val ktor_version = "1.5.4"
+
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.3.2")
-    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.core:core-ktx:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.3.0")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.material:material:${rootProject.extra["compose_version"]}")
@@ -81,7 +85,13 @@ dependencies {
     // CameraX View class
     implementation ("androidx.camera:camera-view:1.0.0-alpha24")
 
-    implementation ("com.google.mlkit:barcode-scanning:16.1.1")
+    implementation ("com.google.mlkit:barcode-scanning:16.1.2")
+
+    //ktor-client
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation ("io.ktor:ktor-client-cio:$ktor_version")
+    implementation ("io.ktor:ktor-client-serialization:$ktor_version")
+    implementation ("io.ktor:ktor-client-gson:$ktor_version")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
