@@ -4,7 +4,7 @@ plugins {
     id("kotlinx-serialization")
 }
 
-val ktor_version = "1.5.4"
+val ktor_version = "1.6.0"
 val compose_version = "1.0.0-beta07"
 val exposedVersion = "0.31.1"
 

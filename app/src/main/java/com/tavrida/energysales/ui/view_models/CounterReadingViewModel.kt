@@ -1,6 +1,7 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
+import com.tavrida.energysales.AppSettings
 import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
@@ -156,7 +157,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
             val items = listOf(
                 CounterReadingSyncItem(
                     id = 1,
-                    user = "Саша",
+                    user = AppSettings.user,
                     counterId = 1,
                     reading = 999.0,
                     readingTime = LocalDateTime.now().let { ZonedDateTime.of(it, ZoneId.systemDefault()) }.toInstant()
@@ -166,7 +167,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
 
             )
 
-            CounterReadingSyncApiClient("192.168.0.112", 8080).use {
+            CounterReadingSyncApiClient(AppSettings.backendHost, AppSettings.backendPort).use {
                 it.sync(items, testMode = true)
             }
         }
