@@ -10,10 +10,7 @@ import com.tavrida.energysales.data_access.models.IDataContext
 import com.tavrida.energysales.data_contract.CounterReadingSyncItem
 import com.tavrida.utils.toEpochMilli
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import kotlin.coroutines.EmptyCoroutineContext
 
 data class IndexedConsumer(val consumer: Consumer, val index: Int)
@@ -153,24 +150,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
     }
 
     suspend fun syncWithServer(testMode: Boolean) {
-        withContext(Dispatchers.IO) {
-
-            val items = listOf(
-                CounterReadingSyncItem(
-                    id = 1,
-                    user = AppSettings.user,
-                    counterId = 1,
-                    reading = 999.0,
-                    readingTime = LocalDateTime.now().toEpochMilli(),
-                    comment = ""
-                )
-
-            )
-
-            CounterReadingSyncApiClient(AppSettings.backendHost, AppSettings.backendPort).use {
-                it.sync(items, testMode = true)
-            }
-        }
+        CounterReadingsSynchronizer(dataContext).sync(allConsumers, testMode)
     }
 
     companion object {
@@ -201,5 +181,59 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
         }
 
     }
+}
+
+private class CounterReadingsSynchronizer(dataContext: IDataContext) {
+    suspend fun sync(allConsumers: List<Consumer>, testMode: Boolean) {
+        if (testMode) {
+            syncInTestMode(allConsumers)
+        } else {
+            syncInRealMode(allConsumers)
+        }
+    }
+
+    private suspend fun syncInRealMode(allConsumers: List<Consumer>) {
+        withContext(Dispatchers.IO) {
+
+            val items = listOf(
+                CounterReadingSyncItem(
+                    id = 1,
+                    user = AppSettings.user,
+                    counterId = 1,
+                    reading = 999.0,
+                    readingTime = LocalDateTime.now().toEpochMilli(),
+                    comment = ""
+                )
+
+            )
+
+            CounterReadingSyncApiClient(AppSettings.backendHost, AppSettings.backendPort).use {
+                it.sync(items, testMode = true)
+            }
+        }
+    }
+
+    private suspend fun syncInTestMode(allConsumers: List<Consumer>) {
+        withContext(Dispatchers.IO) {
+
+            val items = listOf(
+                CounterReadingSyncItem(
+                    id = 1,
+                    user = AppSettings.user,
+                    counterId = 1,
+                    reading = 999.0,
+                    readingTime = LocalDateTime.now().toEpochMilli(),
+                    comment = ""
+                )
+
+            )
+
+            CounterReadingSyncApiClient(AppSettings.backendHost, AppSettings.backendPort).use {
+                it.sync(items, testMode = true)
+            }
+        }
+    }
+
+
 }
 
