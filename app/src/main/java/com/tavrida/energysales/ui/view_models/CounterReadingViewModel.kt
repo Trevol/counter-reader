@@ -8,6 +8,7 @@ import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
 import com.tavrida.energysales.data_contract.CounterReadingSyncItem
+import com.tavrida.utils.toEpochMilli
 import kotlinx.coroutines.*
 import java.lang.Exception
 import java.time.LocalDateTime
@@ -152,7 +153,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
     }
 
     suspend fun syncWithServer(testMode: Boolean) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
 
             val items = listOf(
                 CounterReadingSyncItem(
@@ -160,8 +161,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
                     user = AppSettings.user,
                     counterId = 1,
                     reading = 999.0,
-                    readingTime = LocalDateTime.now().let { ZonedDateTime.of(it, ZoneId.systemDefault()) }.toInstant()
-                        .toEpochMilli(),
+                    readingTime = LocalDateTime.now().toEpochMilli(),
                     comment = ""
                 )
 
