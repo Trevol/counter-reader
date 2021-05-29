@@ -12,6 +12,7 @@ interface IDataContext {
     fun loadAll(): List<Consumer>
     fun updateReading(reading: CounterReading)
     fun createReading(newReading: CounterReading)
+    fun updateSyncData(unsynchronized: List<CounterReading>)
 }
 
 class DataContext(val db: Database) : IDataContext {
@@ -73,6 +74,21 @@ class DataContext(val db: Database) : IDataContext {
             val readingRows = CounterReadingsTable.selectAll().toList()
             val prevReadingRows = PrevCounterReadingsTable.selectAll().toList()
             connectConsumerEntities(consumerRows, counterRows, readingRows, prevReadingRows)
+        }
+    }
+
+    override fun updateSyncData(unsynchronized: List<CounterReading>) {
+        if (unsynchronized.isEmpty()) {
+            return
+        }
+        transaction(db) {
+            for (r in unsynchronized) {
+                CounterReadingsTable.update({ CounterReadingsTable.id eq r.id }) {
+                    it[synchronized] = r.synchronized
+                    it[syncTime] = r.syncTime
+                    it[serverId] = r.serverId
+                }
+            }
         }
     }
 

@@ -30,4 +30,8 @@ private class DummyDataContext : IDataContext {
     override fun createReading(newReading: CounterReading) {
 
     }
+
+    override fun updateSyncData(unsynchronized: List<CounterReading>) {
+
+    }
 }
