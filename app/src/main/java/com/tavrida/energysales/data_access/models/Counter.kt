@@ -14,7 +14,7 @@ data class Counter(
     val comment: String? = null,
     val importOrder: Int
 ) {
-    val currentReading: CounterReading?
+    val recentReading: CounterReading?
         get() {
             val lastReading = readings.maxByOrNull { it.readingTime } ?: return null
             return if (lastReading.readingTime.isCurrentMonth()) {

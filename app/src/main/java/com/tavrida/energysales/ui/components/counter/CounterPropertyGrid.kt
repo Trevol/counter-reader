@@ -79,7 +79,7 @@ object CounterPropertyGrid {
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
         ) {
-            ValueCell(value = counter.currentReading?.reading.noTrailingZero())
+            ValueCell(value = counter.recentReading?.reading.noTrailingZero())
             Icon(
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = "Редактировать показания"

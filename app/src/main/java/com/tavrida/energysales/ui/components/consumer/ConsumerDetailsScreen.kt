@@ -56,7 +56,7 @@ fun ConsumerDetailsScreen(
         val counter = selectedCounter.counter
         EnterReadingDialog(
             counter,
-            counter.currentReading,
+            counter.recentReading,
             onDismiss = {
                 selectedCounter.showReadingEditor = false
             },

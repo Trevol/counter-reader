@@ -11,5 +11,7 @@ data class Consumer(
         counters.sortedBy { it.serialNumber }.map { "${it.serialNumber}(${it.importOrder})" }
             .joinToString(separator = ", ")
 
-    fun allCountersHaveRead() = counters.all { it.currentReading != null }
+    fun allCountersHaveRecentReadings() = counters.all { it.recentReading != null }
+    fun allCountersAreSynchronized() =
+        counters.all { it.readings.all { it.synchronized } }
 }

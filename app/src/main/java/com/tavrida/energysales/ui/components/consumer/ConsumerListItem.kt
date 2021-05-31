@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tavrida.energysales.data_access.models.Consumer
+import com.tavrida.utils.iif
 
 @Composable
 fun ConsumerListItem(
@@ -38,27 +39,27 @@ fun ConsumerListItem(
             CountersList(consumer)
         }
 
-        if (consumer.allCountersHaveRead()) {
-            DoneMark()
+        if (consumer.allCountersHaveRecentReadings()) {
+            DoneMark(consumer.allCountersAreSynchronized())
         }
     }
 }
 
 @Composable
 private inline fun CountersList(consumer: Consumer) {
-    for(counter in consumer.counters){
+    for (counter in consumer.counters) {
         Text(text = "${counter.serialNumber}(${counter.importOrder}). ${counter.comment.orEmpty()}")
     }
 
 }
 
 @Composable
-private inline fun DoneMark() {
+private inline fun DoneMark(isSynchronized: Boolean) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         Icon(
             imageVector = Icons.Outlined.Done,
             contentDescription = "Сделано",
-            tint = Color.Green
+            tint = isSynchronized.iif(Color.Green, Color.Red)
         )
     }
 }
