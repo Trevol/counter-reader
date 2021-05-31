@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
     private var permissionsGranted by mutableStateOf(false)
 
     private lateinit var viewModel: CounterReadingViewModel
-
+    private val storage by lazy { AppStorage(this, AppSettings.STORAGE_DIR) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
 
     private fun ready() {
         viewModel = CounterReadingViewModel(
-            DataContext(DatabaseInstance.get(filesDir))
+            DataContext(DatabaseInstance.get(storage.root))
         )
         permissionsGranted = true
 
