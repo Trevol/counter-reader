@@ -9,7 +9,10 @@ import java.io.File
 object DatabaseInstance {
     const val DB_NAME = "ENERGY_SALES_MOBILE"
 
-    fun get(directory: File) = dbUrl(directory).let { Database.connect(it).initSchema() }
+    fun get(directory: File) = dbUrl(directory).let {
+        Database.connect(it)
+            // .initSchema()
+    }
 
     private fun dbUrl(directory: File) =
         File(directory, DB_NAME)
