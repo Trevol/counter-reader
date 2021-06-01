@@ -25,7 +25,6 @@ fun SyncWithServerScreen(
     sync: suspend (testMode: Boolean) -> Unit,
     onClose: () -> Unit
 ) {
-    val context = LocalContext.current
     var done by rememberMutableStateOf(false)
     var error by rememberMutableStateOf(null as Exception?)
 
@@ -38,7 +37,7 @@ fun SyncWithServerScreen(
         done = true
     }
 
-    BackHandler(enabled = false, onBack = onClose)
+    BackHandler(enabled = true, onBack = onClose)
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

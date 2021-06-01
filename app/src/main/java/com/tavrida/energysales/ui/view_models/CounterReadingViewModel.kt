@@ -110,10 +110,25 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
 
     fun applyNewReading(counter: Counter, newReadingValue: Double) {
         busy {
+            val newReading =
+                CounterReading(
+                    -1,
+                    counter.id,
+                    newReadingValue,
+                    LocalDateTime.now(),
+                    null,
+                    false,
+                    null,
+                    null
+                )
+            counter.readings.add(newReading)
+            dataContext.createReading(newReading)
+            /*
             val reading = counter.recentReading
             if (reading != null) {
                 reading.reading = newReadingValue
                 reading.readingTime = LocalDateTime.now()
+                reading.synchronized = false
 
                 dataContext.updateReading(reading)
             } else {
@@ -131,6 +146,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
                 counter.readings.add(newReading)
                 dataContext.createReading(newReading)
             }
+            */
         }
     }
 
