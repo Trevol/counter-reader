@@ -22,22 +22,27 @@ import java.lang.Exception
 @Composable
 fun SyncWithServerScreen(
     testMode: Boolean,
+    numOfUnsyncItems: Int,
     sync: suspend (testMode: Boolean) -> Unit,
     onClose: () -> Unit
 ) {
     var done by rememberMutableStateOf(false)
     var error by rememberMutableStateOf(null as Exception?)
 
-    LaunchedEffect(key1 = Unit) {
-        try {
-            sync(testMode)
-        } catch (e: Exception) {
-            error = e
+    BackHandler(enabled = true, onBack = onClose)
+
+    if (numOfUnsyncItems > 0) {
+        LaunchedEffect(key1 = Unit) {
+            try {
+                sync(testMode)
+            } catch (e: Exception) {
+                error = e
+            }
+            done = true
         }
-        done = true
     }
 
-    BackHandler(enabled = true, onBack = onClose)
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -51,17 +56,25 @@ fun SyncWithServerScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (!done) {
-                CircularProgressIndicator()
-                Text(text = "Выполняется синхронизация...")
-            } else {
-                if (error == null) {
-                    Text(text = "Синхронизация выполнилась успешно.")
+            if (numOfUnsyncItems > 0) {
+                if (!done) {
+                    CircularProgressIndicator()
+                    Text(text = "Выполняется синхронизация...")
                 } else {
-                    Text(text = "Произошла ошибка!", color = Color.Red)
-                    Text(text = "Обратитесь к администратору!")
-                    Text(text = "Подробности: ${error!!.message}")
+                    if (error == null) {
+                        Text(text = "Синхронизация выполнилась успешно.")
+                    } else {
+                        Text(text = "Произошла ошибка!", color = Color.Red)
+                        Text(text = "Обратитесь к администратору!")
+                        Text(text = "Подробности: ${error!!.message}")
+                    }
+                    Button(onClick = onClose) {
+                        Text(text = "Закрыть")
+                    }
                 }
+            }
+            else{
+                Text(text = "Нечего синхронизировать.")
                 Button(onClick = onClose) {
                     Text(text = "Закрыть")
                 }

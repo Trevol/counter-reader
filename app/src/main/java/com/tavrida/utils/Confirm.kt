@@ -23,7 +23,18 @@ fun confirm(context: Context, message: String, no: () -> Unit = {}, yes: () -> U
 }
 
 fun error(context: Context, message: String) {
-    Icons.Outlined.Error
+    AlertDialog.Builder(context)
+        //.setTitle(R.string.app_name)
+        // .setIcon(Drawable())
+        .setMessage(message)
+        .setNegativeButton("Закрыть") { dialog, id ->
+            dialog.dismiss()
+        }
+        .create()
+        .show()
+}
+
+fun info(context: Context, message: String) {
     AlertDialog.Builder(context)
         //.setTitle(R.string.app_name)
         // .setIcon(Drawable())

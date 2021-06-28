@@ -50,6 +50,25 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
 
     private suspend fun syncInTestMode(allConsumers: List<Consumer>) {
         withContext(Dispatchers.IO) {
+            val items = (1..250).map {
+                CounterReadingSyncItem(
+                    id = 1,
+                    user = "Саша",
+                    counterId = it % 190 + 1,
+                    reading = 999.0,
+                    readingTime = LocalDateTime.now().toEpochMilli(),
+                    comment = null
+                )
+            }
+            val idMappings = apiClient().use {
+                it.sync(items, testMode = true)
+            }
+            if (items.size != idMappings.size) {
+                throw Exception("unsynchronized.size != idMappings.size: ${items.size} != ${idMappings.size}")
+            }
+        }
+
+        /*withContext(Dispatchers.IO) {
             val unsynchronized = allConsumers.unsynchronizedReadings()
             if (unsynchronized.isEmpty()) {
                 return@withContext
@@ -62,7 +81,7 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
             if (unsynchronized.size != idMappings.size) {
                 throw Exception("unsynchronized.size != idMappings.size: ${unsynchronized.size} != ${idMappings.size}")
             }
-        }
+        }*/
     }
 
     companion object {

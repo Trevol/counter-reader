@@ -61,6 +61,7 @@ fun App(viewModel: CounterReadingViewModel) {
     if (syncWithServer != null) {
         SyncWithServerScreen(
             testMode = syncWithServer!!.testMode,
+            numOfUnsyncItems = viewModel.numOfUnsyncItems(syncWithServer!!.testMode),
             sync = viewModel::syncWithServer,
             onClose = { syncWithServer = null })
     }

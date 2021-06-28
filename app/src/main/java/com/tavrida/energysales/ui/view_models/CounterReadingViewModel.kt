@@ -165,6 +165,23 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
         CounterReadingsSynchronizer(dataContext).sync(allConsumers, testMode)
     }
 
+
+    fun doneAndAllProgress(): String {
+        val counters = allConsumers.flatMap { it.counters }
+        val doneCount = counters.count { it.recentReading != null }
+        return "$doneCount/${counters.size}"
+    }
+
+    fun numOfUnsyncItems(testMode: Boolean): Int {
+        if (testMode) {
+            return 100
+        }
+        return allConsumers
+            .flatMap { it.counters }
+            .flatMap { it.readings }
+            .count { !it.synchronized }
+    }
+
     companion object {
         private data class IndexedConsumerWithCounter(
             val consumer: IndexedConsumer,

@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.ProductionQuantityLimits
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.SearchState
 import com.tavrida.utils.confirm
+import com.tavrida.utils.info
 import kotlinx.coroutines.launch
 
 @Composable
@@ -76,12 +78,20 @@ fun ConsumersListScreen(
         },
         drawerGesturesEnabled = false,
         drawerContent = {
-            SideMenu(onSyncWithServerRequest = { testMode ->
-                scope.launch {
-                    scaffoldState.drawerState.close()
+            SideMenu(
+                onSyncWithServerRequest = { testMode ->
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                    onSyncWithServerRequest(testMode)
+                },
+                onProgressRequest = {
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                    info(activity, viewModel.doneAndAllProgress())
                 }
-                onSyncWithServerRequest(testMode)
-            })
+            )
         }
     ) {
         ConsumersList(
@@ -93,7 +103,10 @@ fun ConsumersListScreen(
 }
 
 @Composable
-private fun SideMenu(onSyncWithServerRequest: (testMode: Boolean) -> Unit) {
+private fun SideMenu(
+    onSyncWithServerRequest: (testMode: Boolean) -> Unit,
+    onProgressRequest: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -119,6 +132,17 @@ private fun SideMenu(onSyncWithServerRequest: (testMode: Boolean) -> Unit) {
         ) {
             Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
             Text(text = "Тест связи с сервером")
+        }
+
+        Row(
+            modifier = Modifier
+                .clickable { onProgressRequest() }
+                .padding(16.dp)
+                .padding(PaddingValues(top = 6.dp)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(imageVector = Icons.Outlined.ProductionQuantityLimits, contentDescription = null)
+            Text(text = "Сделано/Всего")
         }
     }
 }
