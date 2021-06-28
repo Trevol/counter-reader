@@ -21,9 +21,8 @@ import java.lang.Exception
 
 @Composable
 fun SyncWithServerScreen(
-    testMode: Boolean,
     numOfUnsyncItems: Int,
-    sync: suspend (testMode: Boolean) -> Unit,
+    sync: suspend () -> Unit,
     onClose: () -> Unit
 ) {
     var done by rememberMutableStateOf(false)
@@ -34,7 +33,7 @@ fun SyncWithServerScreen(
     if (numOfUnsyncItems > 0) {
         LaunchedEffect(key1 = Unit) {
             try {
-                sync(testMode)
+                sync()
             } catch (e: Exception) {
                 error = e
             }

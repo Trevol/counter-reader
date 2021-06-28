@@ -2,22 +2,19 @@ package com.tavrida.energysales.ui.components.consumer
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.icons.outlined.ProductionQuantityLimits
-import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.SearchState
+import com.tavrida.utils.ClickHandler
 import com.tavrida.utils.confirm
 import com.tavrida.utils.info
 import kotlinx.coroutines.launch
@@ -26,16 +23,19 @@ import kotlinx.coroutines.launch
 fun ConsumersListScreen(
     viewModel: CounterReadingViewModel,
     searchFieldVisible: Boolean,
-    onCounterScannerRequest: () -> Unit,
-    onSyncWithServerRequest: (testMode: Boolean) -> Unit
+    onCounterScannerRequest: ClickHandler,
+    onUploadResultsToServer: ClickHandler,
+    onDownloadFromServer: ClickHandler
 ) {
     val activity = LocalContext.current as Activity
     val scope = rememberCoroutineScope()
     val scaffoldState: ScaffoldState = rememberScaffoldState()
 
-    BackHandler {
+    fun closeDrawer() = scope.launch { scaffoldState.drawerState.close() }
+    fun openDrawer() = scope.launch { scaffoldState.drawerState.open() }
+    fun closeDrawerOrClearFilterOrExitApp() {
         if (!scaffoldState.drawerState.isClosed) {
-            scope.launch { scaffoldState.drawerState.close() }
+            closeDrawer()
         } else
             if (viewModel.search.query.isNotEmpty()) {
                 viewModel.search.setQuery("", true)
@@ -46,12 +46,11 @@ fun ConsumersListScreen(
             }
     }
 
-
+    BackHandler(onBack = ::closeDrawerOrClearFilterOrExitApp)
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -78,17 +77,17 @@ fun ConsumersListScreen(
         },
         drawerGesturesEnabled = false,
         drawerContent = {
-            SideMenu(
-                onSyncWithServerRequest = { testMode ->
-                    scope.launch {
-                        scaffoldState.drawerState.close()
-                    }
-                    onSyncWithServerRequest(testMode)
+            ConsumersListScreenSideMenu(
+                onDownloadFromServer = {
+                    closeDrawer()
+                    onDownloadFromServer()
+                },
+                onUploadResultsToServer = {
+                    closeDrawer()
+                    onUploadResultsToServer()
                 },
                 onProgressRequest = {
-                    scope.launch {
-                        scaffoldState.drawerState.close()
-                    }
+                    closeDrawer()
                     info(activity, viewModel.doneAndAllProgress())
                 }
             )
@@ -99,51 +98,6 @@ fun ConsumersListScreen(
             selectedConsumer = viewModel.selectedConsumer?.consumer,
             onClick = { viewModel.selectConsumer(it, showDetails = true) }
         )
-    }
-}
-
-@Composable
-private fun SideMenu(
-    onSyncWithServerRequest: (testMode: Boolean) -> Unit,
-    onProgressRequest: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(6.dp)
-    ) {
-
-        Row(
-            modifier = Modifier
-                .clickable { onSyncWithServerRequest(false) }
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
-            Text(text = "Синхронизировать")
-        }
-
-        Row(
-            modifier = Modifier
-                .clickable { onSyncWithServerRequest(true) }
-                .padding(16.dp)
-                .padding(PaddingValues(top = 6.dp)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(imageVector = Icons.Outlined.Sync, contentDescription = null)
-            Text(text = "Тест связи с сервером")
-        }
-
-        Row(
-            modifier = Modifier
-                .clickable { onProgressRequest() }
-                .padding(16.dp)
-                .padding(PaddingValues(top = 6.dp)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(imageVector = Icons.Outlined.ProductionQuantityLimits, contentDescription = null)
-            Text(text = "Сделано/Всего")
-        }
     }
 }
 

@@ -22,12 +22,12 @@ class CounterReadingSyncApiClient(
         httpClient.close()
     }
 
-    suspend fun sync(items: List<CounterReadingSyncItem>, testMode: Boolean): List<CounterReadingIdMapping> =
+    suspend fun sync(items: List<CounterReadingSyncItem>): List<CounterReadingIdMapping> =
         httpClient.post(
             host = serverHost,
             port = serverPort,
             path = "api/syncReadings",
-            body = CounterReadingSyncRequest(items, testMode)
+            body = CounterReadingSyncRequest(items)
         ) {
             contentType(ContentType.Application.Json)
         }

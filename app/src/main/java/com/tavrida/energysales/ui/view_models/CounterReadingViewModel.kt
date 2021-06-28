@@ -1,6 +1,7 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
+import com.tavrida.energysales.data_access.DatabaseInstance
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
@@ -52,7 +53,10 @@ class SearchState(private val scope: CoroutineScope, val searchAction: () -> Uni
     private var deferSearchAction = null as Job?
 }
 
-class CounterReadingViewModel(private val dataContext: IDataContext) {
+class CounterReadingViewModel(
+    private val dataContext: IDataContext,
+    val dbInstance: DatabaseInstance
+) {
     private val scope = CoroutineScope(EmptyCoroutineContext)
     var busy by mutableStateOf(false)
     val search = SearchState(scope) {
@@ -123,30 +127,6 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
                 )
             counter.readings.add(newReading)
             dataContext.createReading(newReading)
-            /*
-            val reading = counter.recentReading
-            if (reading != null) {
-                reading.reading = newReadingValue
-                reading.readingTime = LocalDateTime.now()
-                reading.synchronized = false
-
-                dataContext.updateReading(reading)
-            } else {
-                val newReading =
-                    CounterReading(
-                        -1,
-                        counter.id,
-                        newReadingValue,
-                        LocalDateTime.now(),
-                        null,
-                        false,
-                        null,
-                        null
-                    )
-                counter.readings.add(newReading)
-                dataContext.createReading(newReading)
-            }
-            */
         }
     }
 
@@ -161,8 +141,8 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
         }
     }
 
-    suspend fun syncWithServer(testMode: Boolean) {
-        CounterReadingsSynchronizer(dataContext).sync(allConsumers, testMode)
+    suspend fun syncWithServer() {
+        CounterReadingsSynchronizer(dataContext).sync(allConsumers)
     }
 
 
@@ -172,10 +152,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
         return "$doneCount/${counters.size}"
     }
 
-    fun numOfUnsyncItems(testMode: Boolean): Int {
-        if (testMode) {
-            return 100
-        }
+    fun numOfUnsyncItems(): Int {
         return allConsumers
             .flatMap { it.counters }
             .flatMap { it.readings }

@@ -12,12 +12,8 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class CounterReadingsSynchronizer(val dataContext: IDataContext) {
-    suspend fun sync(allConsumers: List<Consumer>, testMode: Boolean) {
-        if (testMode) {
-            syncInTestMode(allConsumers)
-        } else {
-            syncInRealMode(allConsumers)
-        }
+    suspend fun sync(allConsumers: List<Consumer>) {
+        syncInRealMode(allConsumers)
     }
 
     private suspend fun syncInRealMode(allConsumers: List<Consumer>) {
@@ -29,7 +25,7 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
 
             val items = unsynchronized.map { it.toSyncItem() }
             val idMappings = apiClient().use {
-                it.sync(items, testMode = false)
+                it.sync(items)
             }
             if (unsynchronized.size != idMappings.size) {
                 throw Exception("unsynchronized.size != idMappings.size: ${unsynchronized.size} != ${idMappings.size}")
@@ -45,43 +41,6 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
             }
             dataContext.updateSyncData(unsynchronized)
         }
-    }
-
-
-    private suspend fun syncInTestMode(allConsumers: List<Consumer>) {
-        withContext(Dispatchers.IO) {
-            val items = (1..250).map {
-                CounterReadingSyncItem(
-                    id = 1,
-                    user = "Саша",
-                    counterId = it % 190 + 1,
-                    reading = 999.0,
-                    readingTime = LocalDateTime.now().toEpochMilli(),
-                    comment = null
-                )
-            }
-            val idMappings = apiClient().use {
-                it.sync(items, testMode = true)
-            }
-            if (items.size != idMappings.size) {
-                throw Exception("unsynchronized.size != idMappings.size: ${items.size} != ${idMappings.size}")
-            }
-        }
-
-        /*withContext(Dispatchers.IO) {
-            val unsynchronized = allConsumers.unsynchronizedReadings()
-            if (unsynchronized.isEmpty()) {
-                return@withContext
-            }
-
-            val items = unsynchronized.map { it.toSyncItem() }
-            val idMappings = apiClient().use {
-                it.sync(items, testMode = true)
-            }
-            if (unsynchronized.size != idMappings.size) {
-                throw Exception("unsynchronized.size != idMappings.size: ${unsynchronized.size} != ${idMappings.size}")
-            }
-        }*/
     }
 
     companion object {

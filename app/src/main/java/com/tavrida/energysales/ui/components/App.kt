@@ -17,16 +17,17 @@ fun App(viewModel: CounterReadingViewModel) {
     var scanByCamera by rememberMutableStateOf(false)
     val selectedConsumerState = viewModel.selectedConsumer
     val showConsumerDetails = selectedConsumerState?.showDetails == true
-    var syncWithServer by rememberMutableStateOf(null as SyncWithServerRequest?)
+    var syncWithServer by rememberMutableStateOf(false)
 
     //hide search text field - because we need hide keyboard
-    val searchFieldVisible = !(scanByCamera || showConsumerDetails || syncWithServer != null)
+    val searchFieldVisible = !(scanByCamera || showConsumerDetails || syncWithServer)
 
     ConsumersListScreen(
         viewModel,
         searchFieldVisible = searchFieldVisible,
         onCounterScannerRequest = { scanByCamera = true },
-        onSyncWithServerRequest = { testMode -> syncWithServer = SyncWithServerRequest(testMode) })
+        onUploadResultsToServer = { syncWithServer = true },
+        onDownloadFromServer = {})
 
     if (selectedConsumerState?.showDetails == true) {
         ConsumerDetailsScreen(
@@ -58,16 +59,13 @@ fun App(viewModel: CounterReadingViewModel) {
         )
     }
 
-    if (syncWithServer != null) {
+    if (syncWithServer) {
         SyncWithServerScreen(
-            testMode = syncWithServer!!.testMode,
-            numOfUnsyncItems = viewModel.numOfUnsyncItems(syncWithServer!!.testMode),
+            numOfUnsyncItems = viewModel.numOfUnsyncItems(),
             sync = viewModel::syncWithServer,
-            onClose = { syncWithServer = null })
+            onClose = { syncWithServer = false })
     }
 
     CircularBusyIndicator(viewModel.busy)
 }
-
-private data class SyncWithServerRequest(val testMode: Boolean)
 

@@ -3,7 +3,6 @@ package com.tavrida.energysales
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,8 +48,14 @@ class MainActivity : ComponentActivity() {
 
     private var permissionsGranted by mutableStateOf(false)
 
-    private lateinit var viewModel: CounterReadingViewModel
     private val storage by lazy { AppStorage(this, AppSettings.STORAGE_DIR) }
+    private val viewModel by lazy {
+        val dbInstance  = DatabaseInstance(storage.root)
+        CounterReadingViewModel(
+            DataContext(dbInstance.db),
+            dbInstance
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +80,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun ready() {
-        viewModel = CounterReadingViewModel(
-            DataContext(DatabaseInstance.get(storage.root))
-        )
         permissionsGranted = true
-
+        viewModel // trigger creation...
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 viewModel.loadData()

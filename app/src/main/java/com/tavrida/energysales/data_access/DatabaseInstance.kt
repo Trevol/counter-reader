@@ -6,30 +6,46 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 
-object DatabaseInstance {
-    const val DB_NAME = "ENERGY_SALES_MOBILE"
+class DatabaseInstance(private val dataDir: File) {
+    private var _db: Database? = null
 
-    fun get(directory: File) = dbUrl(directory).let {
-        Database.connect(it)
-            // .initSchema()
+    val db
+        get() = _db ?: initDb(dataDir).also { _db = it }
+
+
+    fun recreate() {
+        deleteDbFiles(dataDir)
+        _db = initDb(dataDir)
     }
 
-    private fun dbUrl(directory: File) =
-        File(directory, DB_NAME)
-            .let { dbPath ->
-                "jdbc:h2:${dbPath.absolutePath}"
-            }
+    companion object {
+        const val DB_NAME = "ENERGY_SALES_MOBILE"
 
-    private var schemaInitialized = false
-    private fun Database.initSchema(): Database {
-        if (schemaInitialized) {
+        private fun dbUrl(dataDir: File) =
+            File(dataDir, DB_NAME)
+                .let { dbPath ->
+                    "jdbc:h2:${dbPath.absolutePath}"
+                }
+
+        private fun dbMvFile(dataDir: File) = File(dataDir, "$DB_NAME.mv.db")
+        private fun dbTraceFile(dataDir: File) = File(dataDir, "$DB_NAME.trace.db")
+        private fun dbFileExists(dataDir: File) = dbMvFile(dataDir).isFile
+        private fun deleteDbFiles(dataDir: File) {
+            dbMvFile(dataDir).delete()
+            dbTraceFile(dataDir).delete()
+        }
+
+        private fun Database.initSchema(): Database {
+            transaction(this) {
+                SchemaUtils.create(*allTables)
+            }
             return this
         }
-        transaction(this) {
-            SchemaUtils.create(*allTables)
-        }
-        schemaInitialized = true
-        return this
-    }
 
+        private fun initDb(dataDir: File) = if (dbFileExists(dataDir)) {
+            Database.connect(dbUrl(dataDir))
+        } else {
+            Database.connect(dbUrl(dataDir)).initSchema()
+        }
+    }
 }

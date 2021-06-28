@@ -7,14 +7,12 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    val viewModel = remember { CounterReadingViewModel(DummyDataContext()) }
+    val viewModel = remember { CounterReadingViewModel(DummyDataContext(), dbInstance) }
     App(viewModel)
 }
 
@@ -34,4 +32,4 @@ private class DummyDataContext : IDataContext {
     override fun updateSyncData(unsynchronized: List<CounterReading>) {
 
     }
-}
+}*/
