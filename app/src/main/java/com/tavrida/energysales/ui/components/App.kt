@@ -80,7 +80,10 @@ fun App(viewModel: CounterReadingViewModel) {
     }
 
     if (settingsEditorMode) {
-        AppSettingsEditorDialog(onDismiss = { settingsEditorMode = false })
+        AppSettingsEditorDialog(
+            appSettings = viewModel.appSettings.editable(),
+            onDismiss = { settingsEditorMode = false }
+        )
     }
 
     CircularBusyIndicator(viewModel.busy)

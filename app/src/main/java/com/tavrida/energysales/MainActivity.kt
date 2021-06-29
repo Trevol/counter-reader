@@ -48,10 +48,12 @@ class MainActivity : ComponentActivity() {
 
     private var permissionsGranted by mutableStateOf(false)
 
-    private val storage by lazy { AppStorage(this, AppSettings.STORAGE_DIR) }
+    private val appSettings by lazy { AppSettings(getPreferences(MODE_PRIVATE)) }
+    private val storage by lazy { AppStorage(this, appSettings.storageDirectory) }
     private val viewModel by lazy {
         val dbInstance  = DatabaseInstance(storage.root)
         CounterReadingViewModel(
+            appSettings,
             DataContext(dbInstance.db),
             dbInstance
         )

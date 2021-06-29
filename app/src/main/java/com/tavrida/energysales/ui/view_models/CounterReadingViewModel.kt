@@ -1,6 +1,7 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
+import com.tavrida.energysales.AppSettings
 import com.tavrida.energysales.data_access.DatabaseInstance
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
@@ -54,6 +55,7 @@ class SearchState(private val scope: CoroutineScope, val searchAction: () -> Uni
 }
 
 class CounterReadingViewModel(
+    val appSettings: AppSettings,
     private val dataContext: IDataContext,
     val dbInstance: DatabaseInstance
 ) {
@@ -142,7 +144,7 @@ class CounterReadingViewModel(
     }
 
     suspend fun uploadReadingsToServer() {
-        CounterReadingsSynchronizer(dataContext).uploadReadingsToServer(allConsumers)
+        CounterReadingsSynchronizer(appSettings.backendUrl, appSettings.user, dataContext).uploadReadingsToServer(allConsumers)
     }
 
     suspend fun reloadCountersFromServer() {

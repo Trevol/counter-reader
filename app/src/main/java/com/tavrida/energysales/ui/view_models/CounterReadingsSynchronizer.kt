@@ -1,6 +1,5 @@
 package com.tavrida.energysales.ui.view_models
 
-import com.tavrida.energysales.AppSettings
 import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.CounterReading
@@ -11,7 +10,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-class CounterReadingsSynchronizer(val dataContext: IDataContext) {
+class CounterReadingsSynchronizer(
+    val backendUrl: String?,
+    val user: String,
+    val dataContext: IDataContext
+) {
+    init {
+        if (backendUrl.isNullOrEmpty()){
+            throw Exception("Backend URL is empty")
+        }
+    }
     suspend fun uploadReadingsToServer(allConsumers: List<Consumer>) {
         withContext(Dispatchers.IO) {
             val unsynchronized = allConsumers.unsynchronizedReadings()
@@ -19,8 +27,8 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
                 return@withContext
             }
 
-            val items = unsynchronized.map { it.toSyncItem() }
-            val idMappings = apiClient().use {
+            val items = unsynchronized.map { it.toSyncItem(user) }
+            val idMappings = apiClient(backendUrl!!).use {
                 TODO("Change names and routes to upload/download")
                 it.sync(items)
             }
@@ -41,16 +49,16 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
     }
 
     companion object {
-        fun apiClient() =
-            CounterReadingSyncApiClient(AppSettings.backendUrl)
+        fun apiClient(backendUrl: String) =
+            CounterReadingSyncApiClient(backendUrl)
 
         fun Iterable<Consumer>.unsynchronizedReadings() =
             flatMap { it.counters }.flatMap { it.readings }
                 .filter { !it.synchronized }
 
-        fun CounterReading.toSyncItem() = CounterReadingSyncItem(
+        fun CounterReading.toSyncItem(user: String) = CounterReadingSyncItem(
             id = id,
-            user = AppSettings.user,
+            user = user,
             counterId = counterId,
             reading = reading,
             readingTime = readingTime.toEpochMilli(),

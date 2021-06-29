@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tavrida.energysales.AppSettings
+import com.tavrida.energysales.EditableAppSettings
 import com.tavrida.utils.IconButton
 import com.tavrida.utils.rememberMutableStateOf
 
 @Composable
-fun AppSettingsEditorDialog(onDismiss: () -> Unit) {
-    var serverUrl by rememberMutableStateOf(AppSettings.backendUrl)
+fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> Unit) {
     AlertDialog(
         title = {
             Text("Настройки")
@@ -31,13 +31,20 @@ fun AppSettingsEditorDialog(onDismiss: () -> Unit) {
                 ) {
                     Text("Сервер")
                     Spacer(modifier = Modifier.width(4.dp))
-                    OutlinedTextField(value = serverUrl, onValueChange = { serverUrl = it })
+                    OutlinedTextField(
+                        value = appSettings.backendUrl.orEmpty(),
+                        onValueChange = { appSettings.backendUrl = it })
                 }
             }
         },
         onDismissRequest = onDismiss,
         confirmButton = {
-            IconButton(Icons.Outlined.Done, onClick = { onDismiss() })
+            IconButton(Icons.Outlined.Done,
+                onClick = {
+                    appSettings.apply()
+                    onDismiss()
+                }
+            )
         }
     )
 }
