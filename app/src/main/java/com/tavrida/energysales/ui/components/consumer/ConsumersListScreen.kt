@@ -18,6 +18,7 @@ import com.tavrida.utils.ClickHandler
 import com.tavrida.utils.confirm
 import com.tavrida.utils.info
 import kotlinx.coroutines.launch
+import com.tavrida.utils.IconButton
 
 @Composable
 fun ConsumersListScreen(
@@ -55,13 +56,7 @@ fun ConsumersListScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
-                    }
-                }) {
-                    Icon(imageVector = Icons.Outlined.Menu, contentDescription = null)
-                }
+                IconButton(Icons.Outlined.Menu, onClick = { openDrawer() })
                 if (searchFieldVisible) {
                     ConsumerCounterSearch(
                         Modifier
@@ -120,13 +115,10 @@ private fun ConsumerCounterSearch(
         },
         trailingIcon = {
             IconButton(
-                enabled = !searchState.searching,
-                onClick = {
-                    searchState.setQuery("", true)
-                }
-            ) {
-                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
-            }
+                Icons.Outlined.Clear,
+                onClick = { searchState.setQuery("", true) },
+                enabled = !searchState.searching
+            )
         }
     )
 }

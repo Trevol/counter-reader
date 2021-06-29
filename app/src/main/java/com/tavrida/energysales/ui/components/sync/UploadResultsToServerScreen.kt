@@ -3,7 +3,6 @@ package com.tavrida.energysales.ui.components.sync
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -13,27 +12,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tavrida.energysales.ui.components.common.BackButton
+import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.utils.rememberMutableStateOf
 import com.tavrida.utils.suppressedClickable
 import java.lang.Exception
 
 @Composable
-fun SyncWithServerScreen(
-    numOfUnsyncItems: Int,
-    sync: suspend () -> Unit,
+fun UploadResultsToServerScreen(
+    viewModel: CounterReadingViewModel,
     onClose: () -> Unit
 ) {
     var done by rememberMutableStateOf(false)
     var error by rememberMutableStateOf(null as Exception?)
+    val numOfUnsyncItems = remember { viewModel.numOfUnsyncItems() }
 
     BackHandler(enabled = true, onBack = onClose)
 
     if (numOfUnsyncItems > 0) {
         LaunchedEffect(key1 = Unit) {
             try {
-                sync()
+                viewModel.syncWithServer()
             } catch (e: Exception) {
                 error = e
             }
@@ -71,8 +71,7 @@ fun SyncWithServerScreen(
                         Text(text = "Закрыть")
                     }
                 }
-            }
-            else{
+            } else {
                 Text(text = "Нечего синхронизировать.")
                 Button(onClick = onClose) {
                     Text(text = "Закрыть")

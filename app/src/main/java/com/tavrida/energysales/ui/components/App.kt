@@ -7,7 +7,7 @@ import com.tavrida.energysales.ui.components.common.CircularBusyIndicator
 import com.tavrida.energysales.ui.components.consumer.ConsumerDetailsScreen
 import com.tavrida.energysales.ui.components.consumer.ConsumersListScreen
 import com.tavrida.energysales.ui.components.counter.CounterQRCodeScanner
-import com.tavrida.energysales.ui.components.sync.SyncWithServerScreen
+import com.tavrida.energysales.ui.components.sync.UploadResultsToServerScreen
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.utils.rememberMutableStateOf
 
@@ -17,17 +17,19 @@ fun App(viewModel: CounterReadingViewModel) {
     var scanByCamera by rememberMutableStateOf(false)
     val selectedConsumerState = viewModel.selectedConsumer
     val showConsumerDetails = selectedConsumerState?.showDetails == true
-    var syncWithServer by rememberMutableStateOf(false)
+    var uploadToServerMode by rememberMutableStateOf(false)
 
     //hide search text field - because we need hide keyboard
-    val searchFieldVisible = !(scanByCamera || showConsumerDetails || syncWithServer)
+    val searchFieldVisible = !(scanByCamera || showConsumerDetails || uploadToServerMode)
 
     ConsumersListScreen(
         viewModel,
         searchFieldVisible = searchFieldVisible,
         onCounterScannerRequest = { scanByCamera = true },
-        onUploadResultsToServer = { syncWithServer = true },
-        onDownloadFromServer = {})
+        onUploadResultsToServer = { uploadToServerMode = true },
+        onDownloadFromServer = {
+
+        })
 
     if (selectedConsumerState?.showDetails == true) {
         ConsumerDetailsScreen(
@@ -59,11 +61,11 @@ fun App(viewModel: CounterReadingViewModel) {
         )
     }
 
-    if (syncWithServer) {
-        SyncWithServerScreen(
-            numOfUnsyncItems = viewModel.numOfUnsyncItems(),
-            sync = viewModel::syncWithServer,
-            onClose = { syncWithServer = false })
+    if (uploadToServerMode) {
+        UploadResultsToServerScreen(
+            viewModel = viewModel,
+            onClose = { uploadToServerMode = false }
+        )
     }
 
     CircularBusyIndicator(viewModel.busy)

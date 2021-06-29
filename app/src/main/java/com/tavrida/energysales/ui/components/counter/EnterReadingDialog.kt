@@ -5,16 +5,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.ui.components.common.AutoFocusable
 import com.tavrida.utils.noTrailingZero
+import com.tavrida.utils.IconButton
 
 @Composable
 fun EnterReadingDialog(
@@ -54,17 +53,8 @@ fun EnterReadingDialog(
         },
         onDismissRequest = onDismiss,
         confirmButton = {
-            IconButton(
-                onClick = { onConfirm() }
-            ) {
-                Icon(imageVector = Icons.Outlined.Done, contentDescription = "Сохранить")
-            }
-        },
-        /*dismissButton = {
-            IconButton(onClick = onDismiss) {
-                Icon(imageVector = Icons.Outlined.Cancel, contentDescription = "Отмена")
-            }
-        }*/
+            IconButton(Icons.Outlined.Done, onClick = onConfirm)
+        }
     )
 }
 
