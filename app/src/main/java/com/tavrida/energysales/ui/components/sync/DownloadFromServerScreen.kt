@@ -19,27 +19,14 @@ import com.tavrida.utils.suppressedClickable
 import java.lang.Exception
 
 @Composable
-fun UploadResultsToServerScreen(
+fun DownloadFromServerScreen(
     viewModel: CounterReadingViewModel,
     onClose: () -> Unit
 ) {
     var done by rememberMutableStateOf(false)
     var error by rememberMutableStateOf(null as Exception?)
-    val numOfPendingItems = remember { viewModel.numOfPendingItems() }
 
     BackHandler(enabled = true, onBack = onClose)
-
-    if (numOfPendingItems > 0) {
-        LaunchedEffect(key1 = Unit) {
-            try {
-                viewModel.uploadReadingsToServer()
-            } catch (e: Exception) {
-                error = e
-            }
-            done = true
-        }
-    }
-
 
     Scaffold(
         modifier = Modifier
@@ -54,7 +41,7 @@ fun UploadResultsToServerScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (numOfPendingItems > 0) {
+            if (true) {
                 if (!done) {
                     CircularProgressIndicator()
                     Text(text = "Выполняется синхронизация...")

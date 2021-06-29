@@ -1,5 +1,6 @@
 package com.tavrida.energysales
 
+import io.ktor.http.*
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -13,5 +14,7 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
+        val url = URLBuilder("http://195.230.112.210:8080//api/ggg")
+        url.protocol
     }
 }

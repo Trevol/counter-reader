@@ -23,7 +23,7 @@ fun EnterReadingDialog(
     onNewReading: (Counter, Double) -> Unit
 ) {
     var newReading by remember { mutableStateOf(currentReading?.reading.noTrailingZero()) }
-    val onConfirm = { tryConfirm(counter, newReading, onNewReading) }
+    val onConfirm = { valiadteAndApply(counter, newReading, onNewReading) }
     val isError = newReading.isNotEmpty() && newReading.isInvalidDouble()
     AlertDialog(
         text = {
@@ -60,7 +60,7 @@ fun EnterReadingDialog(
 
 private fun String.isInvalidDouble() = toDoubleOrNull() == null
 
-private fun tryConfirm(
+private fun valiadteAndApply(
     counter: Counter,
     newReadingRawVal: String,
     onNewReading: (Counter, Double) -> Unit

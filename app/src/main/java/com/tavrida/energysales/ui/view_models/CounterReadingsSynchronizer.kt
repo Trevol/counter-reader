@@ -12,11 +12,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class CounterReadingsSynchronizer(val dataContext: IDataContext) {
-    suspend fun sync(allConsumers: List<Consumer>) {
-        syncInRealMode(allConsumers)
-    }
-
-    private suspend fun syncInRealMode(allConsumers: List<Consumer>) {
+    suspend fun uploadReadingsToServer(allConsumers: List<Consumer>) {
         withContext(Dispatchers.IO) {
             val unsynchronized = allConsumers.unsynchronizedReadings()
             if (unsynchronized.isEmpty()) {
@@ -25,6 +21,7 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
 
             val items = unsynchronized.map { it.toSyncItem() }
             val idMappings = apiClient().use {
+                TODO("Change names and routes to upload/download")
                 it.sync(items)
             }
             if (unsynchronized.size != idMappings.size) {
@@ -45,7 +42,7 @@ class CounterReadingsSynchronizer(val dataContext: IDataContext) {
 
     companion object {
         fun apiClient() =
-            CounterReadingSyncApiClient(AppSettings.backendHost, AppSettings.backendPort)
+            CounterReadingSyncApiClient(AppSettings.backendUrl)
 
         fun Iterable<Consumer>.unsynchronizedReadings() =
             flatMap { it.counters }.flatMap { it.readings }

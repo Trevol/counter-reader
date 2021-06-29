@@ -26,7 +26,8 @@ fun ConsumersListScreen(
     searchFieldVisible: Boolean,
     onCounterScannerRequest: ClickHandler,
     onUploadResultsToServer: ClickHandler,
-    onDownloadFromServer: ClickHandler
+    onDownloadFromServer: ClickHandler,
+    onSettingsEditor: ClickHandler
 ) {
     val activity = LocalContext.current as Activity
     val scope = rememberCoroutineScope()
@@ -87,7 +88,7 @@ fun ConsumersListScreen(
                 },
                 onSettings = {
                     closeDrawer()
-                    TODO()
+                    onSettingsEditor()
                 }
             )
         }

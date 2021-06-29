@@ -141,8 +141,12 @@ class CounterReadingViewModel(
         }
     }
 
-    suspend fun syncWithServer() {
-        CounterReadingsSynchronizer(dataContext).sync(allConsumers)
+    suspend fun uploadReadingsToServer() {
+        CounterReadingsSynchronizer(dataContext).uploadReadingsToServer(allConsumers)
+    }
+
+    suspend fun reloadCountersFromServer() {
+
     }
 
 
@@ -152,7 +156,7 @@ class CounterReadingViewModel(
         return "$doneCount/${counters.size}"
     }
 
-    fun numOfUnsyncItems(): Int {
+    fun numOfPendingItems(): Int {
         return allConsumers
             .flatMap { it.counters }
             .flatMap { it.readings }
