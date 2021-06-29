@@ -13,7 +13,7 @@ import com.tavrida.utils.ensureTrailingChar
 class CounterReadingSyncApiClient(
     serverUrl: String
 ) : AutoCloseable {
-    val serverUrl = ensureTrailingChar(serverUrl, pathDelimiter)
+    private val serverUrl = ensureTrailingChar(serverUrl, pathDelimiter)
 
     private fun endpointUrl(path: String) = "$serverUrl$path"
 
@@ -26,10 +26,8 @@ class CounterReadingSyncApiClient(
     }
 
     private suspend inline fun <R : Any, reified T> postJson(endpointPath: String, data: R): T {
-        return httpClient.post(
-            urlString = endpointUrl(endpointPath)
-        ) {
-            this.body = data
+        return httpClient.post(urlString = endpointUrl(endpointPath)) {
+            body = data
             contentType(ContentType.Application.Json)
         }
     }
