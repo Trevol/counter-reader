@@ -5,8 +5,8 @@ plugins {
 }
 
 val ktor_version = "1.6.0"
-val compose_version = "1.0.0-beta07"
-val exposedVersion = "0.31.1"
+val compose_version = "1.0.0-beta09"
+val exposedVersion = "0.32.1"
 
 
 android {
@@ -66,12 +66,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$compose_version")
     implementation("androidx.compose.material:material-icons-extended:$compose_version")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha08")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha01")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07")
+    implementation("androidx.activity:activity-compose:1.3.0-beta02")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha03")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08")
 
     // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
-    // implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
     implementation("com.h2database:h2:1.4.200")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -80,12 +80,12 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.30")
 
     // CameraX
-    implementation("androidx.camera:camera-core:1.1.0-alpha04")
-    implementation("androidx.camera:camera-camera2:1.1.0-alpha04")
-    implementation("androidx.camera:camera-lifecycle:1.1.0-alpha04")
+    implementation("androidx.camera:camera-core:1.1.0-alpha05")
+    implementation("androidx.camera:camera-camera2:1.1.0-alpha05")
+    implementation("androidx.camera:camera-lifecycle:1.1.0-alpha05")
 
     // CameraX View class
-    implementation("androidx.camera:camera-view:1.0.0-alpha24")
+    implementation("androidx.camera:camera-view:1.0.0-alpha25")
 
     implementation("com.google.mlkit:barcode-scanning:16.1.2")
 
