@@ -42,9 +42,7 @@ fun ConsumersListScreen(
             if (viewModel.search.query.isNotEmpty()) {
                 viewModel.search.setQuery("", true)
             } else {
-                confirm(activity, "Выйти?") {
-                    activity.finish()
-                }
+                confirm(activity, "Выйти?", yes = { activity.finish() })
             }
     }
 

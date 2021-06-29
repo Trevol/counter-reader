@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
         viewModel // trigger creation...
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                viewModel.loadData()
+                viewModel.loadLocalData()
             }
         }
     }

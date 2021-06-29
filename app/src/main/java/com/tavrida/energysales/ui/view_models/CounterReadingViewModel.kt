@@ -66,7 +66,7 @@ class CounterReadingViewModel(
     }
     private var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
-    suspend fun loadData() {
+    fun loadLocalData() {
         busy {
             allConsumers = dataContext.loadAll()
             searchConsumers()
@@ -147,8 +147,9 @@ class CounterReadingViewModel(
         CounterReadingsSynchronizer(appSettings.backendUrl, appSettings.user, dataContext).uploadReadingsToServer(allConsumers)
     }
 
-    suspend fun reloadCountersFromServer() {
-
+    suspend fun reloadDataFromServer(): Boolean {
+        delay(2000)
+        throw Exception("Implement it!")
     }
 
 
