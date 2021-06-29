@@ -89,6 +89,10 @@ fun ConsumersListScreen(
                 onProgressRequest = {
                     closeDrawer()
                     info(activity, viewModel.doneAndAllProgress())
+                },
+                onSettings = {
+                    closeDrawer()
+                    TODO()
                 }
             )
         }
