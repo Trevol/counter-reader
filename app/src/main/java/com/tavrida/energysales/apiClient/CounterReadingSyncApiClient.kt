@@ -1,5 +1,6 @@
 package com.tavrida.energysales.apiClient
 
+import com.tavrida.energysales.data_contract.ConsumerData
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -54,9 +55,8 @@ class CounterReadingSyncApiClient(
         }*/
     }
 
-    suspend fun getMobileRecentData(): Int {
+    suspend fun getRecentData(): List<ConsumerData> {
         return getJson("/api/mobile/recent_data")
-        TODO()
     }
 }
 

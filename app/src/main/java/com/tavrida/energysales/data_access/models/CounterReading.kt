@@ -24,17 +24,3 @@ class CounterReading(
     var syncTime by mutableStateOf(syncTime)
     var serverId by mutableStateOf(serverId)
 }
-
-/*
-data class CounterReading(
-    val id: Int,
-    val counterId: Int,
-    val reading: Double,
-    val readingTime: LocalDateTime,
-    val comment: String? = null,
-
-    val synchronized: Boolean,
-    val syncTime: LocalDateTime?,
-    val serverId: Int?
-)
-* */

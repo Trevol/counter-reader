@@ -54,8 +54,7 @@ class MainActivity : ComponentActivity() {
         val dbInstance  = DatabaseInstance(storage.root)
         CounterReadingViewModel(
             appSettings,
-            DataContext(dbInstance.db),
-            dbInstance
+            DataContext(dbInstance)
         )
     }
 

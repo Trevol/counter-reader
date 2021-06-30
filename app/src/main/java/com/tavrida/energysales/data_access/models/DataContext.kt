@@ -1,6 +1,7 @@
 package com.tavrida.energysales.data_access.models
 
 import androidx.compose.runtime.toMutableStateList
+import com.tavrida.energysales.data_access.DatabaseInstance
 import com.tavrida.energysales.data_access.dbmodel.tables.ConsumersTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CounterReadingsTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CountersTable
@@ -10,38 +11,42 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 interface IDataContext {
     fun loadAll(): List<Consumer>
+    fun insertAll(consumers: List<Consumer>)
     fun updateReading(reading: CounterReading)
     fun createReading(newReading: CounterReading)
     fun updateSyncData(unsynchronized: List<CounterReading>)
+    fun recreateDb()
 }
 
-class DataContext(val db: Database) : IDataContext {
-    fun insertAll(consumers: List<Consumer>) {
+class DataContext(val dbInstance: DatabaseInstance) : IDataContext {
+    override fun insertAll(consumers: List<Consumer>) {
         if (consumers.isEmpty()) {
             return
         }
-        transaction(db) {
+        transaction(dbInstance.db) {
             for (consumer in consumers) {
-                val consId = ConsumersTable.insertAndGetId {
+                ConsumersTable.insert {
+                    it[id] = consumer.id
                     it[name] = consumer.name
                     it[comment] = consumer.comment
                     it[importOrder] = consumer.importOrder
-                }.value
+                }
 
                 for (counter in consumer.counters) {
-                    val counterId = CountersTable.insertAndGetId {
+                    CountersTable.insertAndGetId {
                         it[serialNumber] = counter.serialNumber
-                        it[consumerId] = consId
+                        it[consumerId] = consumer.id
                         it[K] = counter.K
                         it[comment] = counter.comment
                         it[importOrder] = counter.importOrder
-                    }.value
+                    }
 
                     for (reading in counter.readings) {
                         CounterReadingsTable.insert {
-                            it[this.counterId] = counterId
+                            it[this.counterId] = counter.id
                             it[this.reading] = reading.reading
                             it[readingTime] = reading.readingTime
+                            it[user] = reading.user
                             it[comment] = reading.comment
                             it[synchronized] = reading.synchronized
                             it[syncTime] = reading.syncTime
@@ -50,7 +55,8 @@ class DataContext(val db: Database) : IDataContext {
                     }
 
                     PrevCounterReadingsTable.insert {
-                        it[this.counterId] = counterId
+                        it[id] = counter.prevReading.id
+                        it[this.counterId] = counter.id
                         it[reading] = counter.prevReading.reading
                         it[consumption] = counter.prevReading.consumption
                         it[readDate] = counter.prevReading.readDate
@@ -61,7 +67,7 @@ class DataContext(val db: Database) : IDataContext {
         }
     }
 
-    override fun loadAll() = transaction(db) {
+    override fun loadAll() = transaction(dbInstance.db) {
         val consumerRows = ConsumersTable.selectAll()
             .orderBy(ConsumersTable.importOrder)
             .toList()
@@ -81,7 +87,7 @@ class DataContext(val db: Database) : IDataContext {
         if (unsynchronized.isEmpty()) {
             return
         }
-        transaction(db) {
+        transaction(dbInstance.db) {
             for (r in unsynchronized) {
                 CounterReadingsTable.update({ CounterReadingsTable.id eq r.id }) {
                     it[synchronized] = r.synchronized
@@ -92,8 +98,12 @@ class DataContext(val db: Database) : IDataContext {
         }
     }
 
+    override fun recreateDb() {
+        dbInstance.recreate()
+    }
+
     override fun updateReading(reading: CounterReading) {
-        transaction(db) {
+        transaction(dbInstance.db) {
             CounterReadingsTable.update({ CounterReadingsTable.id eq reading.id }) {
                 it[this.reading] = reading.reading
                 it[readingTime] = reading.readingTime
@@ -107,7 +117,7 @@ class DataContext(val db: Database) : IDataContext {
     }
 
     override fun createReading(newReading: CounterReading) {
-        transaction(db) {
+        transaction(dbInstance.db) {
             val id = CounterReadingsTable.insertAndGetId {
                 it[counterId] = newReading.counterId
                 it[reading] = newReading.reading
@@ -191,4 +201,4 @@ class DataContext(val db: Database) : IDataContext {
 }
 
 fun <T> transaction(dc: DataContext, statement: Transaction.() -> T): T =
-    transaction(dc.db, statement)
+    transaction(dc.dbInstance.db, statement)

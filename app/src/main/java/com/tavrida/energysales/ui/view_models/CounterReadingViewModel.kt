@@ -56,8 +56,7 @@ class SearchState(private val scope: CoroutineScope, val searchAction: () -> Uni
 
 class CounterReadingViewModel(
     val appSettings: AppSettings,
-    private val dataContext: IDataContext,
-    val dbInstance: DatabaseInstance
+    private val dataContext: IDataContext
 ) {
     private val scope = CoroutineScope(EmptyCoroutineContext)
     var busy by mutableStateOf(false)
@@ -145,12 +144,19 @@ class CounterReadingViewModel(
     }
 
     suspend fun uploadReadingsToServer() {
-        CounterReadingsSynchronizer(appSettings.backendUrl, dataContext).uploadReadingsToServer(allConsumers)
+        CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
+            .uploadReadingsToServer(allConsumers)
     }
 
     suspend fun reloadDataFromServer(): Boolean {
-        delay(2000)
-        throw Exception("Implement it!")
+        val dataChanged = CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
+            .reloadRecentDataFromServer()
+        if (dataChanged){
+            loadLocalData()
+            clearSelection()
+            search.setQuery("", true)
+        }
+        return dataChanged
     }
 
 

@@ -1,10 +1,12 @@
 package com.tavrida.energysales.ui.view_models
 
+import androidx.compose.runtime.mutableStateListOf
 import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
-import com.tavrida.energysales.data_access.models.Consumer
-import com.tavrida.energysales.data_access.models.CounterReading
-import com.tavrida.energysales.data_access.models.IDataContext
+import com.tavrida.energysales.data_access.models.*
+import com.tavrida.energysales.data_contract.ConsumerData
+import com.tavrida.energysales.data_contract.CounterData
 import com.tavrida.energysales.data_contract.CounterReadingItem
+import com.tavrida.energysales.data_contract.PrevCounterReadingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -14,10 +16,11 @@ class CounterReadingsSynchronizer(
     val dataContext: IDataContext
 ) {
     init {
-        if (backendUrl.isNullOrEmpty()){
+        if (backendUrl.isNullOrEmpty()) {
             throw Exception("Backend URL is empty")
         }
     }
+
     suspend fun uploadReadingsToServer(allConsumers: List<Consumer>) {
         withContext(Dispatchers.IO) {
             val unsynchronized = allConsumers.unsynchronizedReadings()
@@ -25,7 +28,7 @@ class CounterReadingsSynchronizer(
                 return@withContext
             }
 
-            val items = unsynchronized.map { it.toSyncItem() }
+            val items = unsynchronized.map { it.toUploadItem() }
             val idMappings = apiClient(backendUrl!!).use {
                 it.uploadMobileReadings(items)
             }
@@ -45,6 +48,21 @@ class CounterReadingsSynchronizer(
         }
     }
 
+    suspend fun reloadRecentDataFromServer(): Boolean {
+        return withContext(Dispatchers.IO) {
+            val consumerData = apiClient(backendUrl!!).use {
+                it.getRecentData()
+            }
+            if (consumerData.isEmpty()) {
+                return@withContext false
+            }
+
+            dataContext.recreateDb()
+            dataContext.insertAll(consumerData.map { it.toConsumer() })
+            true
+        }
+    }
+
     companion object {
         fun apiClient(backendUrl: String) =
             CounterReadingSyncApiClient(backendUrl)
@@ -53,7 +71,7 @@ class CounterReadingsSynchronizer(
             flatMap { it.counters }.flatMap { it.readings }
                 .filter { !it.synchronized }
 
-        fun CounterReading.toSyncItem() = CounterReadingItem(
+        fun CounterReading.toUploadItem() = CounterReadingItem(
             id = id,
             user = user,
             counterId = counterId,
@@ -61,6 +79,40 @@ class CounterReadingsSynchronizer(
             readingTime = readingTime,
             comment = comment
         )
+
+        private fun ConsumerData.toConsumer(): Consumer {
+            return Consumer(
+                id = id,
+                name = name,
+                counters = counters.map { it.toCounter() }.toMutableList(),
+                comment = comment,
+                importOrder = importOrder
+            )
+        }
+
+        private fun CounterData.toCounter(): Counter {
+            return Counter(
+                id = id,
+                serialNumber = serialNumber,
+                consumerId = consumerId,
+                K = K,
+                prevReading = prevReading.toPrevReading(),
+                readings = mutableStateListOf(),
+                comment = comment,
+                importOrder = importOrder
+            )
+        }
+
+        private fun PrevCounterReadingData.toPrevReading(): PrevCounterReading {
+            return PrevCounterReading(
+                id = id,
+                counterId = counterId,
+                reading = reading,
+                consumption = consumption,
+                readDate = readDate,
+                comment = comment
+            )
+        }
     }
 
 
