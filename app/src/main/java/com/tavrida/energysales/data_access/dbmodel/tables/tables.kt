@@ -1,16 +1,25 @@
 package com.tavrida.energysales.data_access.dbmodel.tables
 
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.date
 import org.jetbrains.exposed.sql.`java-time`.datetime
 
-object ConsumersTable : IntIdTable("PUBLIC.CONSUMER") {
+
+open class SimpleIdTable(name: String = "", columnName: String = "id") : IdTable<Int>(name) {
+    override val id: Column<EntityID<Int>> = integer(columnName).entityId()
+    override val primaryKey by lazy { super.primaryKey ?: PrimaryKey(id) }
+}
+
+object ConsumersTable : SimpleIdTable("PUBLIC.CONSUMER") {
     val name = varchar("name", 256).uniqueIndex()
     val comment = varchar("comment", 2000).nullable()
     val importOrder = integer("import_order").uniqueIndex()
 }
 
-object CountersTable : IntIdTable("PUBLIC.COUNTER") {
+object CountersTable : SimpleIdTable("PUBLIC.COUNTER") {
     val serialNumber = varchar("serial_number", 20).uniqueIndex()
     val consumerId = reference("consumer_id", ConsumersTable.id)
     val K = double("K")
@@ -18,7 +27,7 @@ object CountersTable : IntIdTable("PUBLIC.COUNTER") {
     val importOrder = integer("import_order").uniqueIndex()
 }
 
-object PrevCounterReadingsTable : IntIdTable("PUBLIC.PREV_COUNTER_READING") {
+object PrevCounterReadingsTable : SimpleIdTable("PUBLIC.PREV_COUNTER_READING") {
     val counterId = reference("counter_id", CountersTable.id)
         .uniqueIndex()
     val reading = double("reading")
