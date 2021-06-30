@@ -122,6 +122,7 @@ class CounterReadingViewModel(
                     counter.id,
                     newReadingValue,
                     LocalDateTime.now(),
+                    appSettings.user!!,
                     null,
                     false,
                     null,
@@ -144,7 +145,7 @@ class CounterReadingViewModel(
     }
 
     suspend fun uploadReadingsToServer() {
-        CounterReadingsSynchronizer(appSettings.backendUrl, appSettings.user, dataContext).uploadReadingsToServer(allConsumers)
+        CounterReadingsSynchronizer(appSettings.backendUrl, dataContext).uploadReadingsToServer(allConsumers)
     }
 
     suspend fun reloadDataFromServer(): Boolean {

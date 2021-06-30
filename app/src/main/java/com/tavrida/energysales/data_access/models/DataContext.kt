@@ -98,6 +98,7 @@ class DataContext(val db: Database) : IDataContext {
                 it[this.reading] = reading.reading
                 it[readingTime] = reading.readingTime
                 it[comment] = reading.comment
+                it[user] = reading.user
                 it[synchronized] = reading.synchronized
                 it[syncTime] = reading.syncTime
                 it[serverId] = reading.serverId
@@ -111,6 +112,7 @@ class DataContext(val db: Database) : IDataContext {
                 it[counterId] = newReading.counterId
                 it[reading] = newReading.reading
                 it[readingTime] = newReading.readingTime
+                it[user] = newReading.user
                 it[comment] = newReading.comment
                 it[synchronized] = newReading.synchronized
                 it[syncTime] = newReading.syncTime
@@ -151,6 +153,7 @@ class DataContext(val db: Database) : IDataContext {
                 counterId = it[t.counterId].value,
                 reading = it[t.reading],
                 readingTime = it[t.readingTime],
+                user = it[t.user],
                 comment = it[t.comment],
                 synchronized = it[t.synchronized],
                 syncTime = it[t.syncTime],

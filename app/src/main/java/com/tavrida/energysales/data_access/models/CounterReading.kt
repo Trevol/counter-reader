@@ -10,6 +10,7 @@ class CounterReading(
     val counterId: Int,
     reading: Double,
     readingTime: LocalDateTime,
+    val user: String,
     comment: String?,
     synchronized: Boolean,
     syncTime: LocalDateTime?,

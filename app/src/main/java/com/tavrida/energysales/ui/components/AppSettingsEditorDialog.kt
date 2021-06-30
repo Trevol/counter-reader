@@ -25,16 +25,18 @@ fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> U
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
+
+                OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Сервер")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    OutlinedTextField(
-                        value = appSettings.backendUrl.orEmpty(),
-                        onValueChange = { appSettings.backendUrl = it })
-                }
+                    label = { Text("Сервер") },
+                    value = appSettings.backendUrl.orEmpty(),
+                    onValueChange = { appSettings.backendUrl = it })
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Пользователь") },
+                    value = appSettings.user.orEmpty(),
+                    onValueChange = { appSettings.user = it })
+
             }
         },
         onDismissRequest = onDismiss,

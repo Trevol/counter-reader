@@ -31,6 +31,7 @@ object CounterReadingsTable : IntIdTable("PUBLIC.COUNTER_READING") {
     val counterId = reference("counter_id", CountersTable.id)
     val reading = double("reading")
     val readingTime = datetime("reading_time")
+    val user = varchar("user", 256)
     val comment = varchar("comment", 2000).nullable()
     val synchronized = bool("synchronized")
     val syncTime = datetime("syncTime").nullable()

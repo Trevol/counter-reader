@@ -12,7 +12,6 @@ import java.time.LocalDateTime
 
 class CounterReadingsSynchronizer(
     val backendUrl: String?,
-    val user: String,
     val dataContext: IDataContext
 ) {
     init {
@@ -27,7 +26,7 @@ class CounterReadingsSynchronizer(
                 return@withContext
             }
 
-            val items = unsynchronized.map { it.toSyncItem(user) }
+            val items = unsynchronized.map { it.toSyncItem() }
             val idMappings = apiClient(backendUrl!!).use {
                 TODO("Change names and routes to upload/download")
                 it.sync(items)
@@ -56,7 +55,7 @@ class CounterReadingsSynchronizer(
             flatMap { it.counters }.flatMap { it.readings }
                 .filter { !it.synchronized }
 
-        fun CounterReading.toSyncItem(user: String) = CounterReadingItem(
+        fun CounterReading.toSyncItem() = CounterReadingItem(
             id = id,
             user = user,
             counterId = counterId,
