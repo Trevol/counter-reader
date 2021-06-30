@@ -38,8 +38,8 @@ fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> U
             CounterReadingSyncApiClient(appSettings.backendUrl!!).use {
                 checkingServer = true
                 try {
-                    delay(1000)
                     it.hello()
+                    delay(1000)
                     info(context, "Проверка связи: Ok")
                 } catch (e: Exception) {
                     error(context, e.message.orEmpty())
