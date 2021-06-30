@@ -5,7 +5,6 @@ import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
 import com.tavrida.energysales.data_contract.CounterReadingItem
-import com.tavrida.utils.toEpochMilli
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -60,7 +59,7 @@ class CounterReadingsSynchronizer(
             user = user,
             counterId = counterId,
             reading = reading,
-            readingTime = readingTime.toEpochMilli(),
+            readingTime = readingTime,
             comment = comment
         )
     }

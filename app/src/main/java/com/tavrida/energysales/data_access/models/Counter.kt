@@ -1,9 +1,6 @@
 package com.tavrida.energysales.data_access.models
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.tavrida.utils.toEpochMilli
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class Counter(
     val id: Int,
@@ -27,18 +24,4 @@ data class Counter(
                 null
             }*/
         }
-
-    private companion object {
-        //24h * 60 (min in h) * 60(sec in min) * 1000
-        private const val msInDay = 24 * 60 * 60 * 1000
-        private fun LocalDateTime.withinDays(n: Int) {
-
-            LocalDateTime.now().toEpochMilli()
-        }
-
-        private fun LocalDateTime.isCurrentMonth() = LocalDate.now()
-            .let { now ->
-                year == now.year && monthValue == now.monthValue
-            }
-    }
 }
