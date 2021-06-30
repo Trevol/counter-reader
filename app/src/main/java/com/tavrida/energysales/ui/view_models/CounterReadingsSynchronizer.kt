@@ -27,8 +27,7 @@ class CounterReadingsSynchronizer(
 
             val items = unsynchronized.map { it.toSyncItem() }
             val idMappings = apiClient(backendUrl!!).use {
-                TODO("Change names and routes to upload/download")
-                it.sync(items)
+                it.uploadMobileReadings(items)
             }
             if (unsynchronized.size != idMappings.size) {
                 throw Exception("unsynchronized.size != idMappings.size: ${unsynchronized.size} != ${idMappings.size}")
