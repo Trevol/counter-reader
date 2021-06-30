@@ -40,8 +40,14 @@ fun DownloadFromServerScreen(
 
     @Composable
     fun Confirmation() {
-        Text("Информация на устройстве будет обновлена.")
-        Text("Продолжить?")
+        if (viewModel.numOfPendingItems() > 0) {
+            Text("Информация на устройстве будет обновлена.")
+            Text("Имеются несихронизированные данные.", color = Color.Red)
+            Text("Продолжить?")
+        } else {
+            Text("Информация на устройстве будет обновлена.")
+            Text("Продолжить?")
+        }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Button("Нет", onClick = onClose)
             Spacer(modifier = Modifier.width(16.dp))
