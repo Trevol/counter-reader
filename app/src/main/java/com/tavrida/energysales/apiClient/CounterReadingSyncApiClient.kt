@@ -6,7 +6,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import com.tavrida.energysales.data_contract.CounterReadingIdMapping
-import com.tavrida.energysales.data_contract.CounterReadingSyncItem
+import com.tavrida.energysales.data_contract.CounterReadingItem
 import com.tavrida.energysales.data_contract.CounterReadingSyncRequest
 import com.tavrida.utils.ensureTrailingChar
 
@@ -32,7 +32,7 @@ class CounterReadingSyncApiClient(
         }
     }
 
-    suspend fun sync(items: List<CounterReadingSyncItem>): List<CounterReadingIdMapping> {
+    suspend fun sync(items: List<CounterReadingItem>): List<CounterReadingIdMapping> {
         return postJson("api/syncReadings", CounterReadingSyncRequest(items))
         /*return httpClient.post(
             host = serverHost,

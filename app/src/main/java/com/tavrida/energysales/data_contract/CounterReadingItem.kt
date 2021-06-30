@@ -3,7 +3,7 @@ package com.tavrida.energysales.data_contract
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CounterReadingSyncItem(
+data class CounterReadingItem(
     val id: Int,
     val user: String,
     val counterId: Int,

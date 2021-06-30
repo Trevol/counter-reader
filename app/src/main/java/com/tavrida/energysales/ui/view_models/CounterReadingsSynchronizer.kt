@@ -4,7 +4,7 @@ import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
-import com.tavrida.energysales.data_contract.CounterReadingSyncItem
+import com.tavrida.energysales.data_contract.CounterReadingItem
 import com.tavrida.utils.toEpochMilli
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -56,7 +56,7 @@ class CounterReadingsSynchronizer(
             flatMap { it.counters }.flatMap { it.readings }
                 .filter { !it.synchronized }
 
-        fun CounterReading.toSyncItem(user: String) = CounterReadingSyncItem(
+        fun CounterReading.toSyncItem(user: String) = CounterReadingItem(
             id = id,
             user = user,
             counterId = counterId,
