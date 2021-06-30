@@ -39,7 +39,7 @@ fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> U
                 checkingServer = true
                 try {
                     it.hello()
-                    delay(1000)
+                    delay(500)
                     info(context, "Проверка связи: Ok")
                 } catch (e: Exception) {
                     error(context, e.message.orEmpty())
