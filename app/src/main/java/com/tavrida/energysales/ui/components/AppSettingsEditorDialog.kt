@@ -1,5 +1,7 @@
 package com.tavrida.energysales.ui.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -39,10 +41,12 @@ fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> U
                     val h = it.hello()
                     h.hello
                     delay(500)
-                    info(context, "Проверка связи: Ok")
+                    //info(context, "Проверка связи: Ok")
+                    context.toast("Проверка связи: Ok")
                 } catch (e: Exception) {
                     delay(500)
-                    error(context, e.message.orEmpty())
+                    // error(context, e.message.orEmpty())
+                    context.toast("Проверка связи: Error. ${e.message}")
                 }
                 checkingServer = false
             }
@@ -90,4 +94,8 @@ fun AppSettingsEditorDialog(appSettings: EditableAppSettings, onDismiss: () -> U
             )
         }
     )
+}
+
+fun Context.toast(text: String){
+    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
 }
