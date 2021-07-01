@@ -22,6 +22,7 @@ import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
+import com.tavrida.utils.error
 
 class MainActivity : ComponentActivity() {
 
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
     private val appSettings by lazy { AppSettings(getPreferences(MODE_PRIVATE)) }
     private val storage by lazy { AppStorage(this, appSettings.storageDirectory) }
     private val viewModel by lazy {
-        val dbInstance  = DatabaseInstance(storage.root)
+        val dbInstance = DatabaseInstance(storage.root)
         CounterReadingViewModel(
             appSettings,
             DataContext(dbInstance)
@@ -85,7 +86,13 @@ class MainActivity : ComponentActivity() {
         viewModel // trigger creation...
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                viewModel.loadLocalData()
+                try {
+                    viewModel.loadLocalData()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        error(this@MainActivity, "${e.message}")
+                    }
+                }
             }
         }
     }
