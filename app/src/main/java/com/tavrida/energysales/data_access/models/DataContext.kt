@@ -33,7 +33,8 @@ class DataContext(val dbInstance: DatabaseInstance) : IDataContext {
                 }
 
                 for (counter in consumer.counters) {
-                    CountersTable.insertAndGetId {
+                    CountersTable.insert {
+                        it[id] = counter.id
                         it[serialNumber] = counter.serialNumber
                         it[consumerId] = consumer.id
                         it[K] = counter.K
