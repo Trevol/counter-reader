@@ -10,6 +10,7 @@ import com.tavrida.energysales.data_contract.CounterReadingIdMapping
 import com.tavrida.energysales.data_contract.CounterReadingItem
 import com.tavrida.energysales.data_contract.HelloResponse
 import com.tavrida.utils.ensureTrailingChar
+import io.ktor.client.features.json.serializer.*
 
 class CounterReadingSyncApiClient(
     serverUrl: String
@@ -19,7 +20,9 @@ class CounterReadingSyncApiClient(
     private fun endpointUrl(path: String) = "$serverUrl$path"
 
     private val httpClient = HttpClient(CIO) {
-        install(JsonFeature)
+        install(JsonFeature) {
+            serializer = KotlinxSerializer()
+        }
     }
 
     override fun close() {
@@ -45,14 +48,6 @@ class CounterReadingSyncApiClient(
 
     suspend fun uploadMobileReadings(items: List<CounterReadingItem>): List<CounterReadingIdMapping> {
         return postJson("/api/mobile/readings", items)
-        /*return httpClient.post(
-            host = serverHost,
-            port = serverPort,
-            path = "api/syncReadings",
-            body = CounterReadingSyncRequest(items)
-        ) {
-            contentType(ContentType.Application.Json)
-        }*/
     }
 
     suspend fun getRecentData(): List<ConsumerData> {
