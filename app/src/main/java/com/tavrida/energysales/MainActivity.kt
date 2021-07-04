@@ -97,21 +97,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
-    fun getRotation(): Pair<Int, Int> {
-        val rotationIdToDegrees = mapOf(0 to 0, 3 to 90, 1 to 270)
-        val rotationId = display!!.rotation
-        return rotationId to rotationIdToDegrees[rotationId]!!
-        // (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-    }*/
-
     companion object {
         @Composable
         fun NoPermissions() = Text(text = "No permissions!")
