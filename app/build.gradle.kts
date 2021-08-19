@@ -5,9 +5,9 @@ plugins {
 }
 
 val ktor_version = "1.6.2"
-val compose_version = "1.0.0"
-val exposedVersion = "0.32.1"
-
+val compose_version = "1.0.1"
+val exposedVersion = "0.33.1"
+val cameraxVersion = "1.1.0-alpha08"
 
 android {
     compileSdk = 30
@@ -66,9 +66,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$compose_version")
     implementation("androidx.compose.material:material-icons-extended:$compose_version")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.0")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha05")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta01")
+    implementation("androidx.activity:activity-compose:1.3.1")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha06")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
 
     // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
     // implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
@@ -80,14 +80,14 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.31")
 
     // CameraX
-    implementation("androidx.camera:camera-core:1.1.0-alpha07")
-    implementation("androidx.camera:camera-camera2:1.1.0-alpha07")
-    implementation("androidx.camera:camera-lifecycle:1.1.0-alpha07")
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
 
     // CameraX View class
-    implementation("androidx.camera:camera-view:1.0.0-alpha27")
+    implementation("androidx.camera:camera-view:1.0.0-alpha28")
 
-    implementation("com.google.mlkit:barcode-scanning:16.2.0")
+    implementation("com.google.mlkit:barcode-scanning:17.0.0")
 
     //ktor-client
     implementation("io.ktor:ktor-client-core:$ktor_version")
