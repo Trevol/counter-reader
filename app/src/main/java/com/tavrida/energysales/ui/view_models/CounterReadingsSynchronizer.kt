@@ -3,7 +3,7 @@ package com.tavrida.energysales.ui.view_models
 import androidx.compose.runtime.mutableStateListOf
 import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
 import com.tavrida.energysales.data_access.models.*
-import com.tavrida.energysales.data_contract.ConsumerData
+import com.tavrida.energysales.data_contract.OrganizationData
 import com.tavrida.energysales.data_contract.CounterData
 import com.tavrida.energysales.data_contract.CounterReadingItem
 import com.tavrida.energysales.data_contract.PrevCounterReadingData
@@ -80,7 +80,7 @@ class CounterReadingsSynchronizer(
             comment = comment
         )
 
-        private fun ConsumerData.toConsumer(): Consumer {
+        private fun OrganizationData.toConsumer(): Consumer {
             return Consumer(
                 id = id,
                 name = name,
@@ -94,7 +94,7 @@ class CounterReadingsSynchronizer(
             return Counter(
                 id = id,
                 serialNumber = serialNumber,
-                consumerId = consumerId,
+                consumerId = organizationId,
                 K = K,
                 prevReading = prevReading.toPrevReading(),
                 readings = mutableStateListOf(),

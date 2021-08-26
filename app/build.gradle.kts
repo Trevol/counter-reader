@@ -4,13 +4,13 @@ plugins {
     id("kotlinx-serialization")
 }
 
-val ktor_version = "1.6.2"
+val ktor_version = "1.6.3"
 val compose_version = "1.0.1"
 val exposedVersion = "0.33.1"
 val cameraxVersion = "1.1.0-alpha08"
 
 android {
-    compileSdk = 30
+    compileSdk = 31
     buildToolsVersion = "30.0.3"
 
     defaultConfig {
@@ -67,7 +67,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$compose_version")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.1")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha06")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha07")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
 
     // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")

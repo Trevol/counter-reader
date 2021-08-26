@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
 @Serializable
-data class ConsumerData(
+data class OrganizationData(
     val id: Int,
     val name: String,
     var counters: List<CounterData>,
@@ -17,7 +17,7 @@ data class ConsumerData(
 data class CounterData(
     val id: Int,
     val serialNumber: String,
-    val consumerId: Int,
+    val organizationId: Int,
     val K: Double,
     val prevReading: PrevCounterReadingData,
     val comment: String? = null,
