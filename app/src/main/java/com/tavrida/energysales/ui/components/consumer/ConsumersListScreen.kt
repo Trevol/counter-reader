@@ -6,41 +6,89 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.tavrida.energysales.ui.components.common.ScanByCameraFloatingButton
 import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import com.tavrida.energysales.ui.view_models.SearchState
+import com.tavrida.utils.ClickHandler
 import com.tavrida.utils.confirm
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.tavrida.utils.info
 import kotlinx.coroutines.launch
+import com.tavrida.utils.IconButton
 
 @Composable
 fun ConsumersListScreen(
     viewModel: CounterReadingViewModel,
     searchFieldVisible: Boolean,
-    onCounterScannerRequest: () -> Unit
+    onCounterScannerRequest: ClickHandler,
+    onUploadResultsToServer: ClickHandler,
+    onDownloadFromServer: ClickHandler,
+    onSettingsEditor: ClickHandler
 ) {
     val activity = LocalContext.current as Activity
-    BackHandler {
-        if (viewModel.search.query.isNotEmpty()) {
-            viewModel.search.setQuery("", true)
-        } else {
-            confirm(activity, "Выйти?") {
-                activity.finish()
+    val scope = rememberCoroutineScope()
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
+
+    fun closeDrawer() = scope.launch { scaffoldState.drawerState.close() }
+    fun openDrawer() = scope.launch { scaffoldState.drawerState.open() }
+    fun closeDrawerOrClearFilterOrExitApp() {
+        if (!scaffoldState.drawerState.isClosed) {
+            closeDrawer()
+        } else
+            if (viewModel.search.query.isNotEmpty()) {
+                viewModel.search.setQuery("", true)
+            } else {
+                confirm(activity, "Выйти?", yes = { activity.finish() })
             }
-        }
     }
+
+    BackHandler(onBack = ::closeDrawerOrClearFilterOrExitApp)
+
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
-            if (searchFieldVisible) {
-                ConsumerCounterSearch(viewModel.search)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(Icons.Outlined.Menu, onClick = { openDrawer() })
+                if (searchFieldVisible) {
+                    ConsumerCounterSearch(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f), viewModel.search
+                    )
+                }
             }
+
         },
         floatingActionButton = {
             ScanByCameraFloatingButton(onCounterScannerRequest)
+        },
+        drawerGesturesEnabled = false,
+        drawerContent = {
+            ConsumersListScreenSideMenu(
+                onDownloadFromServer = {
+                    closeDrawer()
+                    onDownloadFromServer()
+                },
+                onUploadResultsToServer = {
+                    closeDrawer()
+                    onUploadResultsToServer()
+                },
+                onProgressRequest = {
+                    closeDrawer()
+                    info(activity, viewModel.doneAndAllProgress())
+                },
+                onSettings = {
+                    closeDrawer()
+                    onSettingsEditor()
+                }
+            )
         }
     ) {
         ConsumersList(
@@ -53,65 +101,23 @@ fun ConsumersListScreen(
 
 @Composable
 private fun ConsumerCounterSearch(
+    modifier: Modifier = Modifier,
     searchState: SearchState
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         enabled = !searchState.searching,
         value = searchState.query,
+        singleLine = true,
         onValueChange = {
             searchState.setQuery(it)
         },
-        leadingIcon = {
+        trailingIcon = {
             IconButton(
-                enabled = !searchState.searching,
-                onClick = {
-                    searchState.setQuery("", true)
-                }
-            ) {
-                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
-            }
-        }
-    )
-}
-
-@Composable
-private fun ConsumerCounterSearch(
-    initialQuery: String,
-    onQueryChange: (String) -> Unit,
-    searchDebounce: Long = 500
-) {
-    var searching by remember { mutableStateOf(false) }
-    var localQuery by remember { mutableStateOf(initialQuery) }
-    val scope = rememberCoroutineScope()
-    var searchJob by remember { mutableStateOf<Job?>(null) }
-
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = !searching,
-        value = localQuery,
-        onValueChange = {
-            localQuery = it
-            searchJob?.cancel()
-            searchJob = scope.launch {
-                delay(searchDebounce)
-                searching = true
-                onQueryChange(localQuery)
-                searching = false
-            }
-        },
-        leadingIcon = {
-            IconButton(
-                enabled = !searching,
-                onClick = {
-                    localQuery = ""
-                    searching = true
-                    onQueryChange(localQuery)
-                    searching = false
-                }
-            ) {
-                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
-            }
+                Icons.Outlined.Clear,
+                onClick = { searchState.setQuery("", true) },
+                enabled = !searchState.searching
+            )
         }
     )
 }

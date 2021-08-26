@@ -3,13 +3,11 @@ package com.tavrida.energysales.ui.components.common
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,6 +31,7 @@ fun OutlinedFloatField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = MaterialTheme.shapes.small,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
     OutlinedTextField(
@@ -53,7 +52,8 @@ fun OutlinedFloatField(
         singleLine = true,
         maxLines = 1,
         interactionSource = interactionSource,
-        colors
+        shape = shape,
+        colors = colors
     )
 }
 

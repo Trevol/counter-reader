@@ -3,7 +3,6 @@ package com.tavrida.energysales
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +22,7 @@ import com.tavrida.energysales.ui.view_models.CounterReadingViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
+import com.tavrida.utils.error
 
 class MainActivity : ComponentActivity() {
 
@@ -49,8 +49,15 @@ class MainActivity : ComponentActivity() {
 
     private var permissionsGranted by mutableStateOf(false)
 
-    private lateinit var viewModel: CounterReadingViewModel
-
+    private val appSettings by lazy { AppSettings(getPreferences(MODE_PRIVATE)) }
+    private val storage by lazy { AppStorage(this, appSettings.storageDirectory) }
+    private val viewModel by lazy {
+        val dbInstance = DatabaseInstance(storage.root)
+        CounterReadingViewModel(
+            appSettings,
+            DataContext(dbInstance)
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,32 +82,20 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun ready() {
-        viewModel = CounterReadingViewModel(
-            DataContext(DatabaseInstance.get(filesDir))
-        )
         permissionsGranted = true
-
+        viewModel // trigger creation...
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                viewModel.loadData()
+                try {
+                    viewModel.loadLocalData()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        error(this@MainActivity, "${e.message}")
+                    }
+                }
             }
         }
     }
-
-    /*override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
-    fun getRotation(): Pair<Int, Int> {
-        val rotationIdToDegrees = mapOf(0 to 0, 3 to 90, 1 to 270)
-        val rotationId = display!!.rotation
-        return rotationId to rotationIdToDegrees[rotationId]!!
-        // (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-    }*/
 
     companion object {
         @Composable

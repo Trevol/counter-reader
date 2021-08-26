@@ -1,8 +1,6 @@
 package com.tavrida.energysales.data_access.models
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class Counter(
     val id: Int,
@@ -14,20 +12,16 @@ data class Counter(
     val comment: String? = null,
     val importOrder: Int
 ) {
-    val currentReading: CounterReading?
+    val recentReading: CounterReading?
         get() {
-            val lastReading = readings.maxByOrNull { it.readTime } ?: return null
-            return if (lastReading.readTime.isCurrentMonth()) {
+            val lastReading = readings.maxByOrNull { it.readingTime }
+            return lastReading
+            /*
+            val lastReading = readings.maxByOrNull { it.readingTime } ?: return null
+            return if (lastReading.readingTime.isCurrentMonth()) {
                 lastReading
             } else {
                 null
-            }
+            }*/
         }
-
-    private companion object {
-        private fun LocalDateTime.isCurrentMonth() = LocalDate.now()
-            .let { now ->
-                year == now.year && monthValue == now.monthValue
-            }
-    }
 }

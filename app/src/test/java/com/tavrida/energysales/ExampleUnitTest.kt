@@ -1,5 +1,10 @@
 package com.tavrida.energysales
 
+import com.tavrida.energysales.apiClient.CounterReadingSyncApiClient
+import io.ktor.http.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -12,6 +17,8 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        runBlocking {
+            CounterReadingSyncApiClient("http://192.168.0.112:8080").use { it.getRecentData() }
+        }
     }
 }

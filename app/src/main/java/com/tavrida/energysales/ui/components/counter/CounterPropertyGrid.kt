@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.utils.noTrailingZero
 import com.tavrida.utils.toStringOrEmpty
+import java.time.format.DateTimeFormatter
 
 object CounterPropertyGrid {
     private object rowStyle {
@@ -79,7 +80,7 @@ object CounterPropertyGrid {
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
         ) {
-            ValueCell(value = counter.currentReading?.reading.noTrailingZero())
+            ValueCell(value = counter.recentReading?.reading.noTrailingZero())
             Icon(
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = "Редактировать показания"
@@ -98,11 +99,19 @@ object CounterPropertyGrid {
             PropertyRow("ImportOrder", counter.importOrder)
             PropertyRow("К трансф", counter.K.toInt())
             PropertyRow("Примечание", counter.comment)
+            PropertyRow("Синхр", counter.recentReading?.synchronized ?: false)
             PropertyRow("Расход", counter.prevReading.consumption.toInt())
+
             PropertyRow("Пред. показ.", counter.prevReading.reading.noTrailingZero())
             PropertyRow("Наст. показ.") {
                 CurrentReadingCell(counter = counter, onClick = onCurrentReadingClick)
             }
+            PropertyRow(
+                "Дата наст. показ.",
+                value = counter.recentReading?.readingTime?.format(dateTimeFormatter)
+            )
         }
     }
 }
+
+private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")

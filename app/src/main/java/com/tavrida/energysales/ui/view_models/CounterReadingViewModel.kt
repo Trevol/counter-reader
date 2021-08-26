@@ -1,11 +1,12 @@
 package com.tavrida.energysales.ui.view_models
 
 import androidx.compose.runtime.*
+import com.tavrida.energysales.AppSettings
+import com.tavrida.energysales.data_access.DatabaseInstance
 import com.tavrida.energysales.data_access.models.Consumer
 import com.tavrida.energysales.data_access.models.Counter
 import com.tavrida.energysales.data_access.models.CounterReading
 import com.tavrida.energysales.data_access.models.IDataContext
-import com.tavrida.utils.printlnStamped
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import kotlin.coroutines.EmptyCoroutineContext
@@ -53,7 +54,10 @@ class SearchState(private val scope: CoroutineScope, val searchAction: () -> Uni
     private var deferSearchAction = null as Job?
 }
 
-class CounterReadingViewModel(private val dataContext: IDataContext) {
+class CounterReadingViewModel(
+    val appSettings: AppSettings,
+    private val dataContext: IDataContext
+) {
     private val scope = CoroutineScope(EmptyCoroutineContext)
     var busy by mutableStateOf(false)
     val search = SearchState(scope) {
@@ -61,7 +65,7 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
     }
     private var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
-    suspend fun loadData() {
+    fun loadLocalData() {
         busy {
             allConsumers = dataContext.loadAll()
             searchConsumers()
@@ -111,18 +115,20 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
 
     fun applyNewReading(counter: Counter, newReadingValue: Double) {
         busy {
-            val reading = counter.currentReading
-            if (reading != null) {
-                reading.reading = newReadingValue
-                reading.readTime = LocalDateTime.now()
-
-                dataContext.updateReading(reading)
-            } else {
-                val newReading =
-                    CounterReading(-1, counter.id, newReadingValue, LocalDateTime.now(), null)
-                counter.readings.add(newReading)
-                dataContext.createReading(newReading)
-            }
+            val newReading =
+                CounterReading(
+                    -1,
+                    counter.id,
+                    newReadingValue,
+                    LocalDateTime.now(),
+                    appSettings.user!!,
+                    null,
+                    false,
+                    null,
+                    null
+                )
+            counter.readings.add(newReading)
+            dataContext.createReading(newReading)
         }
     }
 
@@ -135,6 +141,36 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
                 busy = false
             }
         }
+    }
+
+    suspend fun uploadReadingsToServer() {
+        CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
+            .uploadReadingsToServer(allConsumers)
+    }
+
+    suspend fun reloadDataFromServer(): Boolean {
+        val dataChanged = CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
+            .reloadRecentDataFromServer()
+        if (dataChanged){
+            loadLocalData()
+            clearSelection()
+            search.setQuery("", true)
+        }
+        return dataChanged
+    }
+
+
+    fun doneAndAllProgress(): String {
+        val counters = allConsumers.flatMap { it.counters }
+        val doneCount = counters.count { it.recentReading != null }
+        return "$doneCount/${counters.size}"
+    }
+
+    fun numOfPendingItems(): Int {
+        return allConsumers
+            .flatMap { it.counters }
+            .flatMap { it.readings }
+            .count { !it.synchronized }
     }
 
     companion object {
@@ -166,4 +202,3 @@ class CounterReadingViewModel(private val dataContext: IDataContext) {
 
     }
 }
-
