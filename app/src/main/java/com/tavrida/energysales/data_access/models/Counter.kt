@@ -1,14 +1,16 @@
 package com.tavrida.energysales.data_access.models
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.tavrida.energysales.data_contract.EnergyConsumptionByMonth
 
 data class Counter(
     val id: Int,
     val serialNumber: String,
     val consumerId: Int,
-    val K: Double,
+    val K: Int,
     val prevReading: PrevCounterReading,
     val readings: SnapshotStateList<CounterReading>,
+    val consumptionHistory: List<EnergyConsumptionByMonth>,
     val comment: String? = null,
     val importOrder: Int
 ) {

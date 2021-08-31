@@ -97,9 +97,10 @@ object CounterPropertyGrid {
         Column(modifier = modifier) {
             PropertyRow("Заводской №", counter.serialNumber)
             PropertyRow("ImportOrder", counter.importOrder)
-            PropertyRow("К трансф", counter.K.toInt())
+            PropertyRow("К трансф", counter.K)
             PropertyRow("Примечание", counter.comment)
             PropertyRow("Синхр", counter.recentReading?.synchronized ?: false)
+            PropertyRow("История", counter.consumptionHistory.sortedBy { it.month }.map { it.consumption }.joinToString())
             PropertyRow("Расход", counter.prevReading.consumption.toInt())
 
             PropertyRow("Пред. показ.", counter.prevReading.reading.noTrailingZero())

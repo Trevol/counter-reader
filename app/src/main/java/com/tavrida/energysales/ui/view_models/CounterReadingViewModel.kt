@@ -65,8 +65,16 @@ class CounterReadingViewModel(
     }
     private var allConsumers = listOf<Consumer>()
     var visibleConsumers by mutableStateOf(listOf<Consumer>())
-    fun loadLocalData() {
+
+    /*fun loadLocalData() {
         busy {
+            allConsumers = dataContext.loadAll()
+            searchConsumers()
+        }
+    }*/
+
+    suspend fun loadLocalData() {
+        busy2 {
             allConsumers = dataContext.loadAll()
             searchConsumers()
         }
@@ -143,6 +151,15 @@ class CounterReadingViewModel(
         }
     }
 
+    private suspend fun busy2(block: suspend () -> Unit) {
+        busy = true
+        try {
+            block()
+        } finally {
+            busy = false
+        }
+    }
+
     suspend fun uploadReadingsToServer() {
         CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
             .uploadReadingsToServer(allConsumers)
@@ -151,7 +168,7 @@ class CounterReadingViewModel(
     suspend fun reloadDataFromServer(): Boolean {
         val dataChanged = CounterReadingsSynchronizer(appSettings.backendUrl, dataContext)
             .reloadRecentDataFromServer()
-        if (dataChanged){
+        if (dataChanged) {
             loadLocalData()
             clearSelection()
             search.setQuery("", true)

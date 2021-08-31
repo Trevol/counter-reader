@@ -13,7 +13,20 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="new versions of dependencies&#10;consumer* renamed to organization*" />
+    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="new versions of dependencies&#10;consumer* renamed to organization*">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/MonthOfYear.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/dbmodel/tables/tables.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/dbmodel/tables/tables.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/Counter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/Counter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/DataContext.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/DataContext.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/OrganizationData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/OrganizationData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/CounterPropertyGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/CounterPropertyGrid.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/EnterReadingDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/EnterReadingDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingsSynchronizer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingsSynchronizer.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +69,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="on_the_way_to_sync_wth_backend" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

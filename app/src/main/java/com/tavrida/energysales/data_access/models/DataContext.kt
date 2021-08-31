@@ -6,6 +6,9 @@ import com.tavrida.energysales.data_access.dbmodel.tables.ConsumersTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CounterReadingsTable
 import com.tavrida.energysales.data_access.dbmodel.tables.CountersTable
 import com.tavrida.energysales.data_access.dbmodel.tables.PrevCounterReadingsTable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -40,6 +43,7 @@ class DataContext(val dbInstance: DatabaseInstance) : IDataContext {
                         it[K] = counter.K
                         it[comment] = counter.comment
                         it[importOrder] = counter.importOrder
+                        it[serializedConsumptionHistory] = Json.encodeToString(counter.consumptionHistory)
                     }
 
                     for (reading in counter.readings) {
@@ -181,6 +185,7 @@ class DataContext(val dbInstance: DatabaseInstance) : IDataContext {
                 consumerId = it[t.consumerId].value,
                 K = it[t.K],
                 prevReading = prevReadingByCounterId[counterId]!!,
+                consumptionHistory = Json.decodeFromString(it[t.serializedConsumptionHistory]),
                 readings = readings.filter { it.counterId == counterId }.toMutableStateList(),
                 comment = it[t.comment],
                 importOrder = it[t.importOrder]

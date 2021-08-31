@@ -22,8 +22,9 @@ object ConsumersTable : SimpleIdTable("PUBLIC.CONSUMER") {
 object CountersTable : SimpleIdTable("PUBLIC.COUNTER") {
     val serialNumber = varchar("serial_number", 20).uniqueIndex()
     val consumerId = reference("consumer_id", ConsumersTable.id)
-    val K = double("K")
+    val K = integer("K")
     val comment = varchar("comment", 2000).nullable()
+    val serializedConsumptionHistory = varchar("serialized_consumption_history", 8000)
     val importOrder = integer("import_order").uniqueIndex()
 }
 

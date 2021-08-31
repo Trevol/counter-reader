@@ -18,11 +18,15 @@ data class CounterData(
     val id: Int,
     val serialNumber: String,
     val organizationId: Int,
-    val K: Double,
+    val K: Int,
     val prevReading: PrevCounterReadingData,
+    val consumptionHistory: List<EnergyConsumptionByMonth>,
     val comment: String? = null,
     val importOrder: Int
 )
+
+@Serializable
+data class EnergyConsumptionByMonth(val month: MonthOfYear, val consumption: Double)
 
 @Serializable
 data class PrevCounterReadingData(

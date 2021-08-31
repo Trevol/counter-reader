@@ -98,6 +98,7 @@ class CounterReadingsSynchronizer(
                 K = K,
                 prevReading = prevReading.toPrevReading(),
                 readings = mutableStateListOf(),
+                consumptionHistory = consumptionHistory,
                 comment = comment,
                 importOrder = importOrder
             )
