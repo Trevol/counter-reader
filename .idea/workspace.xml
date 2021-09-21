@@ -13,26 +13,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="new versions of dependencies&#10;consumer* renamed to organization*">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/MonthOfYear.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="check for errors and warnings for newReading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/dbmodel/tables/tables.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/dbmodel/tables/tables.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/Counter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/Counter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/DataContext.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_access/models/DataContext.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/OrganizationData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/data_contract/OrganizationData.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/CounterPropertyGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/CounterPropertyGrid.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/EnterReadingDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/components/counter/EnterReadingDialog.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingsSynchronizer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tavrida/energysales/ui/view_models/CounterReadingsSynchronizer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[8f56080e]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/home/trevol/.android/avd/Pixel_5_API_29.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -624,7 +614,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629985809841</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="check for errors and warnings for newReading">
+      <created>1630439656031</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1630439656031</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -640,7 +637,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="settings" />
     <MESSAGE value="new versions" />
     <MESSAGE value="IconButton" />
     <MESSAGE value="settings editor" />
@@ -665,6 +661,7 @@
     <MESSAGE value="new gradle version" />
     <MESSAGE value="new versions of dependencies" />
     <MESSAGE value="new versions of dependencies&#10;consumer* renamed to organization*" />
-    <option name="LAST_COMMIT_MESSAGE" value="new versions of dependencies&#10;consumer* renamed to organization*" />
+    <MESSAGE value="check for errors and warnings for newReading" />
+    <option name="LAST_COMMIT_MESSAGE" value="check for errors and warnings for newReading" />
   </component>
 </project>
