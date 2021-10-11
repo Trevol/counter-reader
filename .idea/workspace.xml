@@ -13,9 +13,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="check for errors and warnings for newReading">
+    <list default="true" id="5fcff2e8-35c4-4acc-92af-f04bc7678954" name="Default Changelist" comment="gradle plugin update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -621,7 +621,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630439656031</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="gradle plugin update">
+      <created>1632210886996</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1632210886996</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -637,7 +644,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new versions" />
     <MESSAGE value="IconButton" />
     <MESSAGE value="settings editor" />
     <MESSAGE value="DownloadFromServerScreen" />
@@ -662,6 +668,7 @@
     <MESSAGE value="new versions of dependencies" />
     <MESSAGE value="new versions of dependencies&#10;consumer* renamed to organization*" />
     <MESSAGE value="check for errors and warnings for newReading" />
-    <option name="LAST_COMMIT_MESSAGE" value="check for errors and warnings for newReading" />
+    <MESSAGE value="gradle plugin update" />
+    <option name="LAST_COMMIT_MESSAGE" value="gradle plugin update" />
   </component>
 </project>
