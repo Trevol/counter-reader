@@ -50,10 +50,14 @@ android {
         kotlinCompilerExtensionVersion = compose_version
     }
     packagingOptions {
-        exclude("META-INF/licenses/**")
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
+        jniLibs {
+            excludes += setOf("META-INF/licenses/**")
+        }
+        resources {
+            excludes += setOf("META-INF/licenses/**", "META-INF/AL2.0", "META-INF/LGPL2.1")
+        }
     }
+    namespace = "com.tavrida.energysales"
 }
 
 dependencies {

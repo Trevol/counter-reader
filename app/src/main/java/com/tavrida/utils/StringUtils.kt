@@ -39,7 +39,7 @@ private fun String.removeIndexes(indexes: List<Int>, indexesInDescOrder: Boolean
 }
 
 fun ensureTrailingChar(str: String, ch: Char): String {
-    return if (str.endsWith(ch)) str else "$str/"
+    return if (str.endsWith(ch)) str else "$str$ch"
 }
 
 private const val DECIMAL_POINT = '.'
